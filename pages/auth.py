@@ -30,7 +30,7 @@ def auth_page():
                         st.session_state.token = token
                         st.success("Login successful!")
                         time.sleep(1)
-                        st.experimental_rerun()
+                        st.rerun()
                     else:
                         st.error("Invalid email or password")
 
@@ -68,7 +68,7 @@ def auth_page():
                             st.session_state.token = token
                             st.success("Account created successfully!")
                             time.sleep(1)
-                            st.experimental_rerun()
+                            st.rerun()
 
 def check_auth():
     if "user" not in st.session_state or st.session_state.user is None:
