@@ -11,7 +11,7 @@ st.set_page_config(
     page_title="ViBro Finance - Stock Analysis Platform",
     page_icon="📈",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
     menu_items={
         'Get Help': 'https://github.com/your-repo/vibro-finance',
         'Report a bug': "https://github.com/your-repo/vibro-finance/issues",
@@ -37,47 +37,58 @@ with open('styles/custom.css') as f:
 st.title("📈 ViBro Finance")
 st.markdown("### AI-Powered Stock Analysis Platform")
 
-# Sidebar
-with st.sidebar:
-    st.markdown("### Stock Analysis")
+# Navigation
+nav_options = ["Market Analysis", "Portfolio Management", "Goal Planning"]
+st.markdown("""
+    <div class='nav-container'>
+        <button class='nav-button{0}' onclick='window.location.href="?section=Market+Analysis"'>Market Analysis</button>
+        <button class='nav-button{1}' onclick='window.location.href="?section=Portfolio+Management"'>Portfolio Management</button>
+        <button class='nav-button{2}' onclick='window.location.href="?section=Goal+Planning"'>Goal Planning</button>
+    </div>
+""".format(
+    " active" if "section" not in st.experimental_get_query_params() or st.experimental_get_query_params().get("section", ["Market Analysis"])[0] == "Market Analysis" else "",
+    " active" if st.experimental_get_query_params().get("section", [""])[0] == "Portfolio Management" else "",
+    " active" if st.experimental_get_query_params().get("section", [""])[0] == "Goal Planning" else ""
+), unsafe_allow_html=True)
+
+# Get current section from URL parameters
+section = st.experimental_get_query_params().get("section", ["Market Analysis"])[0]
+
+if section == "Market Analysis":
     analysis_type = st.radio(
         "Select Analysis Type",
-        ["Single Stock", "Compare Stocks"]
+        ["Single Stock", "Compare Stocks"],
+        horizontal=True
     )
 
     if analysis_type == "Single Stock":
         symbol = st.text_input("Enter Stock Symbol", value="AAPL").upper()
         symbols = [symbol]
     else:
-        st.markdown("Enter up to 4 stock symbols to compare:")
+        col1, col2, col3, col4 = st.columns(4)
         symbols = []
-        for i in range(4):
-            symbol_input = st.text_input(f"Stock Symbol {i+1}", key=f"symbol_{i}")
-            if symbol_input:
-                symbols.append(symbol_input.upper())
+        with col1:
+            symbol1 = st.text_input("Stock Symbol 1")
+            if symbol1: symbols.append(symbol1.upper())
+        with col2:
+            symbol2 = st.text_input("Stock Symbol 2")
+            if symbol2: symbols.append(symbol2.upper())
+        with col3:
+            symbol3 = st.text_input("Stock Symbol 3")
+            if symbol3: symbols.append(symbol3.upper())
+        with col4:
+            symbol4 = st.text_input("Stock Symbol 4")
+            if symbol4: symbols.append(symbol4.upper())
 
-    time_period = st.selectbox(
+    time_period = st.select_slider(
         "Select Time Period",
         ["1mo", "3mo", "6mo", "1y", "2y", "5y"],
-        index=3
+        value="1y"
     )
 
     if st.button("Analyze", type="primary"):
         st.session_state.analyze = True
         st.session_state.symbols = symbols
-
-    st.sidebar.markdown("---")
-    section = st.sidebar.radio(
-        "Navigation",
-        ["Market Analysis", "Portfolio Management", "Goal Planning"]
-    )
-
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("### About")
-    st.sidebar.markdown("""
-    ViBro Finance provides real-time stock analysis with AI-powered insights.
-    Data provided by Yahoo Finance.
-    """)
 
 # Main content
 try:
@@ -253,7 +264,7 @@ try:
             # Add sector preferences
             sectors = st.multiselect(
                 "Preferred Sectors (Optional)",
-                ["Technology", "Healthcare", "Financial Services", "Consumer Cyclical", 
+                ["Technology", "Healthcare", "Financial Services", "Consumer Cyclical",
                  "Industrial", "Energy", "Materials", "Real Estate", "Utilities"]
             )
 
@@ -279,7 +290,7 @@ try:
                         # Get and display stock suggestions
                         st.subheader("Recommended Stocks")
                         suggestions = suggest_stocks(
-                            risk_tolerance.lower(), 
+                            risk_tolerance.lower(),
                             investment_amount,
                             sectors if sectors else None
                         )
