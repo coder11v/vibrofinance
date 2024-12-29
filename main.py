@@ -547,24 +547,22 @@ else:
                             <div style='text-align: right; margin: 10px 0;'>
                                 <div style='display: inline-block; background-color: #00AB41; color: white; 
                                       padding: 10px; border-radius: 15px; max-width: 70%;'>
+                                    {msg['message']}
                                 </div>
+                                <small style='opacity: 0.7;'>{formatted_time}</small>
                             </div>
                         """, unsafe_allow_html=True)
-                        st.markdown(msg['message'])
-                        st.markdown(f"<div style='text-align: right;'><small style='opacity: 0.7;'>{formatted_time}</small></div>", 
-                                   unsafe_allow_html=True)
                     else:
                         st.markdown(f"""
                             <div style='text-align: left; margin: 10px 0;'>
                                 <div style='display: inline-block; background-color: #262730; 
                                       padding: 10px; border-radius: 15px; max-width: 70%;'>
-                                    <small style='color: #00AB41;'>{msg['username']}</small>
+                                    <small style='color: #00AB41;'>{msg['username']}</small><br>
+                                    {msg['message']}
                                 </div>
+                                <small style='opacity: 0.7;'>{formatted_time}</small>
                             </div>
                         """, unsafe_allow_html=True)
-                        st.markdown(msg['message'])
-                        st.markdown(f"<div style='text-align: left;'><small style='opacity: 0.7;'>{formatted_time}</small></div>", 
-                                   unsafe_allow_html=True)
 
                 for msg in reversed(messages):
                     is_current_user = msg['username'] == st.session_state.username
