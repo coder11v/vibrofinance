@@ -37,17 +37,18 @@ st.markdown("### AI-Powered Stock Analysis Platform")
 
 # Navigation
 nav_options = ["Market Analysis", "Portfolio Management", "Goal Planning"]
-st.markdown("""
-    <div class='nav-container'>
-        <button class='nav-button{0}' onclick='window.location.href="?section=Market+Analysis"'>Market Analysis</button>
-        <button class='nav-button{1}' onclick='window.location.href="?section=Portfolio+Management"'>Portfolio Management</button>
-        <button class='nav-button{2}' onclick='window.location.href="?section=Goal+Planning"'>Goal Planning</button>
-    </div>
-""".format(
-    " active" if "section" not in st.query_params or st.query_params.get("section", "Market Analysis") == "Market Analysis" else "",
-    " active" if st.query_params.get("section", "") == "Portfolio Management" else "",
-    " active" if st.query_params.get("section", "") == "Goal Planning" else ""
-), unsafe_allow_html=True)
+st.markdown("<div class='nav-container'>", unsafe_allow_html=True)
+cols = st.columns(3)
+for i, option in enumerate(nav_options):
+    with cols[i]:
+        if st.button(
+            option,
+            key=f"nav_{option}",
+            type="secondary" if st.query_params.get("section", "Market Analysis") != option else "primary",
+            use_container_width=True,
+        ):
+            st.query_params["section"] = option
+st.markdown("</div>", unsafe_allow_html=True)
 
 # Get current section from URL parameters
 section = st.query_params.get("section", "Market Analysis")

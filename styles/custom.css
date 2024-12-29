@@ -2,35 +2,33 @@
 
 /* Navigation Styles */
 .nav-container {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    padding: 1rem 0;
     margin-bottom: 2rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 1rem;
 }
 
-.nav-button {
+.nav-container .stButton button {
     background-color: transparent;
     border: 2px solid #00AB41;
     color: #00AB41;
-    padding: 0.5rem 2rem;
-    border-radius: 6px;
     font-weight: 600;
     transition: all 0.3s ease;
+    width: 100%;
+    padding: 0.5rem 2rem;
+    margin: 0;
 }
 
-.nav-button:hover {
+.nav-container .stButton button:hover {
     background-color: #00AB41;
     color: white;
 }
 
-.nav-button.active {
+.nav-container .stButton button[kind="primary"] {
     background-color: #00AB41;
     color: white;
 }
 
-/* Existing Styles */
+/* Stock Metrics Styles */
 .stock-up {
     color: #00E676 !important;
 }
