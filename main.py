@@ -538,32 +538,37 @@ else:
                 st.markdown("### Recent Messages")
                 messages = auth_manager.get_chat_messages()
 
-                for msg in reversed(messages):
+                def format_chat_message(msg, is_current_user):
                     timestamp = datetime.fromisoformat(msg['timestamp'])
                     formatted_time = timestamp.strftime("%I:%M %p")
 
-                    # Style messages differently for current user
-                    if msg['username'] == st.session_state.username:
+                    if is_current_user:
                         st.markdown(f"""
                             <div style='text-align: right; margin: 10px 0;'>
                                 <div style='display: inline-block; background-color: #00AB41; color: white; 
                                       padding: 10px; border-radius: 15px; max-width: 70%;'>
-                                    <div class="markdown-content">{st.markdown(msg['message'], unsafe_allow_html=True)}</div>
-                                    <small style='opacity: 0.7;'>{formatted_time}</small>
                                 </div>
                             </div>
                         """, unsafe_allow_html=True)
+                        st.markdown(msg['message'])
+                        st.markdown(f"<div style='text-align: right;'><small style='opacity: 0.7;'>{formatted_time}</small></div>", 
+                                   unsafe_allow_html=True)
                     else:
                         st.markdown(f"""
                             <div style='text-align: left; margin: 10px 0;'>
                                 <div style='display: inline-block; background-color: #262730; 
                                       padding: 10px; border-radius: 15px; max-width: 70%;'>
                                     <small style='color: #00AB41;'>{msg['username']}</small>
-                                    <div class="markdown-content">{st.markdown(msg['message'], unsafe_allow_html=True)}</div>
-                                    <small style='opacity: 0.7;'>{formatted_time}</small>
                                 </div>
                             </div>
                         """, unsafe_allow_html=True)
+                        st.markdown(msg['message'])
+                        st.markdown(f"<div style='text-align: left;'><small style='opacity: 0.7;'>{formatted_time}</small></div>", 
+                                   unsafe_allow_html=True)
+
+                for msg in reversed(messages):
+                    is_current_user = msg['username'] == st.session_state.username
+                    format_chat_message(msg, is_current_user)
 
                 # Auto-scroll to bottom (placeholder for future enhancement)
                 st.markdown("""
