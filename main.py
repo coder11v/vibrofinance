@@ -8,8 +8,24 @@ from utils.chart_helper import create_stock_chart, create_comparison_chart
 st.set_page_config(
     page_title="ViBro Finance - Stock Analysis Platform",
     page_icon="📈",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': 'https://github.com/your-repo/vibro-finance',
+        'Report a bug': "https://github.com/your-repo/vibro-finance/issues",
+        'About': "ViBro Finance - AI-Powered Stock Analysis Platform"
+    }
 )
+
+# Set dark theme
+st.markdown("""
+    <style>
+        .stApp {
+            background-color: #0E1117;
+            color: #FAFAFA;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 # Load custom CSS
 with open('styles/custom.css') as f:
@@ -44,7 +60,7 @@ with st.sidebar:
         index=3
     )
 
-    if st.button("Analyze"):
+    if st.button("Analyze", type="primary"):
         st.session_state.analyze = True
         st.session_state.symbols = symbols
 
@@ -71,7 +87,7 @@ try:
                 df = calculate_technical_indicators(hist_data)
 
                 # Company header
-                col1, col2, col3 = st.columns([2,1,1])
+                col1, col2 = st.columns([2,1])
                 with col1:
                     st.markdown(f"## {stock_info.get('longName', symbols[0])}")
                     st.markdown(f"*{stock_info.get('sector', '')} | {stock_info.get('industry', '')}*")
@@ -81,54 +97,67 @@ try:
                     price_change = stock_info.get('regularMarketChangePercent', 0)
                     price_color = "stock-up" if price_change >= 0 else "stock-down"
                     st.markdown(f"""
-                        <div style='text-align: right'>
+                        <div class='price-display'>
                             <h2>${current_price:.2f}</h2>
                             <p class='{price_color}'>{price_change:+.2f}%</p>
                         </div>
                     """, unsafe_allow_html=True)
 
-                # Key metrics
-                st.markdown("### Key Metrics")
-                metric_cols = st.columns(4)
-                for i, (metric, value) in enumerate(metrics.items()):
-                    with metric_cols[i % 4]:
-                        st.markdown(f"""
-                            <div class='metric-card'>
-                                <h4>{metric}</h4>
-                                <p>{format_large_number(value) if metric == 'Market Cap' else value}</p>
-                            </div>
-                        """, unsafe_allow_html=True)
+                # Key metrics in expandable section
+                with st.expander("Key Metrics", expanded=True):
+                    metric_cols = st.columns(4)
+                    for i, (metric, value) in enumerate(metrics.items()):
+                        with metric_cols[i % 4]:
+                            st.markdown(f"""
+                                <div class='metric-card'>
+                                    <h4>{metric}</h4>
+                                    <p>{format_large_number(value) if metric == 'Market Cap' else value}</p>
+                                </div>
+                            """, unsafe_allow_html=True)
 
                 # Stock chart
                 st.markdown("### Technical Analysis")
                 fig = create_stock_chart(df)
                 st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True})
 
-                # AI Analysis
-                st.markdown("### AI Insights")
-                with st.spinner('Generating AI analysis...'):
-                    analysis = get_stock_analysis(stock_info, metrics)
+                # AI Analysis in expandable section
+                with st.expander("AI Insights", expanded=True):
+                    with st.spinner('Generating AI analysis...'):
+                        analysis = get_stock_analysis(stock_info, metrics)
 
-                    st.markdown(f"""
-                        <div class='ai-insight'>
-                            <h4>Summary</h4>
-                            <p>{analysis['summary']}</p>
-                        </div>
-                    """, unsafe_allow_html=True)
+                        if 'error' in analysis:
+                            st.error(analysis['error'])
+                        else:
+                            st.markdown(f"""
+                                <div class='ai-insight'>
+                                    <h4>Summary</h4>
+                                    <p>{analysis['summary']}</p>
+                                </div>
+                            """, unsafe_allow_html=True)
 
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        st.markdown("#### Strengths")
-                        for strength in analysis['strengths']:
-                            st.markdown(f"✅ {strength}")
+                            col1, col2 = st.columns(2)
+                            with col1:
+                                st.markdown("#### Strengths")
+                                for strength in analysis['strengths']:
+                                    st.markdown(f"✅ {strength}")
 
-                    with col2:
-                        st.markdown("#### Risks")
-                        for risk in analysis['risks']:
-                            st.markdown(f"⚠️ {risk}")
+                            with col2:
+                                st.markdown("#### Risks")
+                                for risk in analysis['risks']:
+                                    st.markdown(f"⚠️ {risk}")
 
-                    st.markdown("#### Recommendation")
-                    st.info(analysis['recommendation'])
+                            st.markdown("#### Recommendation")
+                            st.info(analysis['recommendation'])
+
+                # Export data
+                with st.expander("Export Data"):
+                    csv = df.to_csv().encode('utf-8')
+                    st.download_button(
+                        label="Download CSV",
+                        data=csv,
+                        file_name=f"{symbols[0]}_stock_data.csv",
+                        mime="text/csv"
+                    )
         else:
             # Comparison View
             with st.spinner('Fetching data for comparison...'):
@@ -140,29 +169,29 @@ try:
                 st.plotly_chart(comparison_fig, use_container_width=True)
 
                 # Display key metrics comparison
-                st.markdown("### Key Metrics Comparison")
-                metrics_data = []
-                for symbol, data in stock_data.items():
-                    metrics = get_key_metrics(data['info'])
-                    metrics['Symbol'] = symbol
-                    metrics['Company'] = data['info'].get('longName', symbol)
-                    metrics_data.append(metrics)
+                with st.expander("Key Metrics Comparison", expanded=True):
+                    metrics_data = []
+                    for symbol, data in stock_data.items():
+                        metrics = get_key_metrics(data['info'])
+                        metrics['Symbol'] = symbol
+                        metrics['Company'] = data['info'].get('longName', symbol)
+                        metrics_data.append(metrics)
 
-                metrics_df = pd.DataFrame(metrics_data)
-                metrics_df.set_index('Symbol', inplace=True)
-                st.dataframe(metrics_df, use_container_width=True)
+                    metrics_df = pd.DataFrame(metrics_data)
+                    metrics_df.set_index('Symbol', inplace=True)
+                    st.dataframe(metrics_df, use_container_width=True)
 
                 # Export data
-                st.markdown("### Export Data")
-                for symbol, data in stock_data.items():
-                    csv = data['history'].to_csv().encode('utf-8')
-                    st.download_button(
-                        label=f"Download {symbol} CSV",
-                        data=csv,
-                        file_name=f"{symbol}_stock_data.csv",
-                        mime="text/csv",
-                        key=f"download_{symbol}"
-                    )
+                with st.expander("Export Data"):
+                    for symbol, data in stock_data.items():
+                        csv = data['history'].to_csv().encode('utf-8')
+                        st.download_button(
+                            label=f"Download {symbol} CSV",
+                            data=csv,
+                            file_name=f"{symbol}_stock_data.csv",
+                            mime="text/csv",
+                            key=f"download_{symbol}"
+                        )
 
 except Exception as e:
     st.error(f"An error occurred: {str(e)}")

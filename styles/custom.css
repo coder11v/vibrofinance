@@ -1,26 +1,48 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 .stock-up {
-    color: #00AB41 !important;
+    color: #00E676 !important;
 }
 
 .stock-down {
-    color: #FF4B4B !important;
+    color: #FF5252 !important;
 }
 
 .metric-card {
-    background-color: #F8FAFB;
+    background-color: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
     padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    color: inherit;
+}
+
+.metric-card h4 {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.5rem;
+}
+
+.metric-card p {
+    color: inherit;
+    font-size: 1.25rem;
+    font-weight: 600;
 }
 
 .ai-insight {
-    background-color: #F0F7FF;
+    background-color: rgba(0, 102, 204, 0.1);
     border-left: 4px solid #0066CC;
     padding: 1rem;
     margin: 1rem 0;
     border-radius: 0 8px 8px 0;
+    color: inherit;
+}
+
+.ai-insight h4 {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.5rem;
+}
+
+.ai-insight p {
+    color: inherit;
 }
 
 div.stButton > button {
@@ -35,5 +57,14 @@ div.stButton > button {
 
 .plot-container {
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Dark theme specific styles */
+[data-theme="dark"] .metric-card {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .ai-insight {
+    background-color: rgba(0, 102, 204, 0.15);
 }
