@@ -17,16 +17,6 @@ st.set_page_config(
     }
 )
 
-# Set dark theme
-st.markdown("""
-    <style>
-        .stApp {
-            background-color: #0E1117;
-            color: #FAFAFA;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
 # Load custom CSS
 with open('styles/custom.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
