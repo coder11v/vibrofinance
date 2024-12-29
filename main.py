@@ -473,6 +473,13 @@ try:
         - Monitor RSI for potential entry/exit points
         """)
 
+    # Add disclaimer at the bottom of the page
+    st.markdown("---")
+    st.markdown("""
+    ### Disclaimer
+    Quotes are not sourced from all markets and may be delayed by up to 20 minutes. All information provided on this platform is offered "as is" and is intended solely for informational purposes. It should not be considered as investment advice, financial planning guidance, or a recommendation to buy or sell any securities. Please consult a qualified financial advisor before making any trading or investment decisions.
+    """)
+
 except Exception as e:
     st.error(f"An error occurred: {str(e)}")
     st.markdown("Please try again with valid stock symbols.")
