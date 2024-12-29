@@ -193,6 +193,55 @@ try:
                             key=f"download_{symbol}"
                         )
 
+    # Add Technical Indicators Explanation section at the bottom
+    st.markdown("---")
+    with st.expander("📚 Understanding Technical Indicators", expanded=False):
+        st.markdown("""
+        ### Stock Chart Components
+
+        #### OHLC (Candlestick Chart)
+        - **O**pen: The stock's price at market open
+        - **H**igh: The highest price during the trading day
+        - **L**ow: The lowest price during the trading day
+        - **C**lose: The final price when the market closes
+        - 🎯 *Green candles* indicate price increase, *red candles* indicate price decrease
+
+        #### Moving Averages
+        - **20 SMA** (Simple Moving Average): Average price over the last 20 days
+        - **50 SMA**: Average price over the last 50 days
+        - 🎯 These help identify trends and potential support/resistance levels
+
+        #### RSI (Relative Strength Index)
+        - A momentum indicator that measures the speed and magnitude of recent price changes
+        - Scale: 0 to 100
+        - Above 70: Potentially overbought
+        - Below 30: Potentially oversold
+        - 🎯 Helps identify potential reversal points
+
+        ### Key Metrics Explained
+
+        #### Market Fundamentals
+        - **Market Cap**: Total value of all shares (Price × Outstanding Shares)
+        - **P/E Ratio**: Price per share divided by earnings per share
+        - **EPS**: Earnings Per Share - Company's profit divided by outstanding shares
+
+        #### Price Indicators
+        - **52 Week High**: Highest stock price in the past year
+        - **52 Week Low**: Lowest stock price in the past year
+        - **Volume**: Number of shares traded
+
+        #### Income Metrics
+        - **Dividend Yield**: Annual dividend payments relative to stock price
+        - 🎯 Higher yield might indicate better income potential, but verify company's stability
+
+        ### Using This Information
+
+        - Compare current price to 52-week range for context
+        - Use P/E ratio to assess if stock is potentially over/undervalued
+        - Watch volume for confirmation of price movements
+        - Monitor RSI for potential entry/exit points
+        """)
+
 except Exception as e:
     st.error(f"An error occurred: {str(e)}")
     st.markdown("Please try again with valid stock symbols.")

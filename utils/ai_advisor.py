@@ -7,8 +7,6 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
-# do not change this unless explicitly requested by the user
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 client = OpenAI(api_key=OPENAI_API_KEY)
 
@@ -40,7 +38,7 @@ def get_stock_analysis(stock_info, metrics):
             raise ValueError("OpenAI API key is missing. Please set the OPENAI_API_KEY environment variable.")
 
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-4",  # Using the correct model name
             messages=[
                 {"role": "system", "content": "You are a professional financial analyst providing stock market insights."},
                 {"role": "user", "content": prompt}
