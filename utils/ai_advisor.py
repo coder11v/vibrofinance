@@ -1,5 +1,5 @@
 import os
-from openai import OpenAI
+import google.generativeai as genai
 import json
 import logging
 
@@ -7,8 +7,8 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
-client = OpenAI(api_key=OPENAI_API_KEY)
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+genai.configure(api_key=GEMINI_API_KEY)
 
 def get_stock_analysis(stock_info, metrics):
     """Get AI-powered analysis of the stock"""
@@ -16,37 +16,36 @@ def get_stock_analysis(stock_info, metrics):
         logger.info(f"Generating AI analysis for {stock_info.get('symbol', 'Unknown Stock')}")
 
         prompt = f"""
-        Analyze this stock based on the following metrics and provide investment insights:
-
-        Company: {stock_info.get('longName', '')}
-        Sector: {stock_info.get('sector', '')}
-        Current Price: ${stock_info.get('currentPrice', '')}
-        P/E Ratio: {metrics.get('PE Ratio', '')}
-        Market Cap: {metrics.get('Market Cap', '')}
-
-        Provide analysis in JSON format with the following structure:
+        Analyze this stock based on the following metrics and provide investment insights.
+        Format your response as a JSON string with exactly this structure:
         {{
             "summary": "Brief summary of the stock",
             "strengths": ["list", "of", "strengths"],
             "risks": ["list", "of", "risks"],
             "recommendation": "buy/hold/sell with brief explanation"
         }}
+
+        Company: {stock_info.get('longName', '')}
+        Sector: {stock_info.get('sector', '')}
+        Current Price: ${stock_info.get('currentPrice', '')}
+        P/E Ratio: {metrics.get('PE Ratio', '')}
+        Market Cap: {metrics.get('Market Cap', '')}
         """
 
-        if not OPENAI_API_KEY:
-            logger.error("OpenAI API key is not set")
-            raise ValueError("OpenAI API key is missing. Please set the OPENAI_API_KEY environment variable.")
+        if not GEMINI_API_KEY:
+            logger.error("Gemini API key is not set")
+            raise ValueError("Gemini API key is missing. Please set the GEMINI_API_KEY environment variable.")
 
-        response = client.chat.completions.create(
-            model="gpt-4",  # Using the correct model name
-            messages=[
-                {"role": "system", "content": "You are a professional financial analyst providing stock market insights."},
-                {"role": "user", "content": prompt}
-            ],
-            response_format={"type": "json_object"}
-        )
+        # Initialize the model
+        model = genai.GenerativeModel('gemini-pro')
 
-        analysis = json.loads(response.choices[0].message.content)
+        # Generate the response
+        response = model.generate_content(prompt)
+
+        # Parse the response text as JSON
+        # The response text should be a JSON string
+        analysis = json.loads(response.text)
+
         logger.info("Successfully generated AI analysis")
         return analysis
 
@@ -54,7 +53,7 @@ def get_stock_analysis(stock_info, metrics):
         logger.error(f"Configuration error: {str(ve)}")
         return {
             "summary": "Unable to generate AI analysis: API key is missing.",
-            "strengths": ["Please set up the OpenAI API key to enable AI insights."],
+            "strengths": ["Please set up the Gemini API key to enable AI insights."],
             "risks": ["Contact administrator to configure the API key."],
             "recommendation": "API configuration required."
         }
