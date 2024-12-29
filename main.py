@@ -3,6 +3,8 @@ import pandas as pd
 from utils.stock_data import get_stock_data, get_multiple_stocks_data, get_key_metrics, format_large_number, calculate_technical_indicators
 from utils.ai_advisor import get_stock_analysis
 from utils.chart_helper import create_stock_chart, create_comparison_chart
+from utils.portfolio_manager import generate_portfolio_recommendation, analyze_portfolio_health
+from utils.goal_planner import FinancialGoal, analyze_goal_feasibility, generate_investment_plan
 
 # Page configuration
 st.set_page_config(
@@ -64,9 +66,15 @@ with st.sidebar:
         st.session_state.analyze = True
         st.session_state.symbols = symbols
 
-    st.markdown("---")
-    st.markdown("### About")
-    st.markdown("""
+    st.sidebar.markdown("---")
+    section = st.sidebar.radio(
+        "Navigation",
+        ["Market Analysis", "Portfolio Management", "Goal Planning"]
+    )
+
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### About")
+    st.sidebar.markdown("""
     ViBro Finance provides real-time stock analysis with AI-powered insights.
     Data provided by Yahoo Finance.
     """)
@@ -76,122 +84,281 @@ try:
     if 'analyze' not in st.session_state:
         st.session_state.analyze = False
 
-    if st.session_state.analyze and len(st.session_state.symbols) > 0:
-        if analysis_type == "Single Stock":
-            with st.spinner(f'Fetching data for {symbols[0]}...'):
-                # Get stock data
-                hist_data, stock_info = get_stock_data(symbols[0], time_period)
-                metrics = get_key_metrics(stock_info)
+    if section == "Market Analysis":
+        if st.session_state.analyze and len(st.session_state.symbols) > 0:
+            if analysis_type == "Single Stock":
+                with st.spinner(f'Fetching data for {symbols[0]}...'):
+                    # Get stock data
+                    hist_data, stock_info = get_stock_data(symbols[0], time_period)
+                    metrics = get_key_metrics(stock_info)
 
-                # Calculate technical indicators
-                df = calculate_technical_indicators(hist_data)
+                    # Calculate technical indicators
+                    df = calculate_technical_indicators(hist_data)
 
-                # Company header
-                col1, col2 = st.columns([2,1])
-                with col1:
-                    st.markdown(f"## {stock_info.get('longName', symbols[0])}")
-                    st.markdown(f"*{stock_info.get('sector', '')} | {stock_info.get('industry', '')}*")
+                    # Company header
+                    col1, col2 = st.columns([2,1])
+                    with col1:
+                        st.markdown(f"## {stock_info.get('longName', symbols[0])}")
+                        st.markdown(f"*{stock_info.get('sector', '')} | {stock_info.get('industry', '')}*")
 
-                with col2:
-                    current_price = stock_info.get('currentPrice', 0)
-                    price_change = stock_info.get('regularMarketChangePercent', 0)
-                    price_color = "stock-up" if price_change >= 0 else "stock-down"
-                    st.markdown(f"""
-                        <div class='price-display'>
-                            <h2>${current_price:.2f}</h2>
-                            <p class='{price_color}'>{price_change:+.2f}%</p>
-                        </div>
-                    """, unsafe_allow_html=True)
+                    with col2:
+                        current_price = stock_info.get('currentPrice', 0)
+                        price_change = stock_info.get('regularMarketChangePercent', 0)
+                        price_color = "stock-up" if price_change >= 0 else "stock-down"
+                        st.markdown(f"""
+                            <div class='price-display'>
+                                <h2>${current_price:.2f}</h2>
+                                <p class='{price_color}'>{price_change:+.2f}%</p>
+                            </div>
+                        """, unsafe_allow_html=True)
 
-                # Key metrics in expandable section
-                with st.expander("Key Metrics", expanded=True):
-                    metric_cols = st.columns(4)
-                    for i, (metric, value) in enumerate(metrics.items()):
-                        with metric_cols[i % 4]:
-                            st.markdown(f"""
-                                <div class='metric-card'>
-                                    <h4>{metric}</h4>
-                                    <p>{format_large_number(value) if metric == 'Market Cap' else value}</p>
-                                </div>
-                            """, unsafe_allow_html=True)
+                    # Key metrics in expandable section
+                    with st.expander("Key Metrics", expanded=True):
+                        metric_cols = st.columns(4)
+                        for i, (metric, value) in enumerate(metrics.items()):
+                            with metric_cols[i % 4]:
+                                st.markdown(f"""
+                                    <div class='metric-card'>
+                                        <h4>{metric}</h4>
+                                        <p>{format_large_number(value) if metric == 'Market Cap' else value}</p>
+                                    </div>
+                                """, unsafe_allow_html=True)
 
-                # Stock chart
-                st.markdown("### Technical Analysis")
-                fig = create_stock_chart(df)
-                st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True})
+                    # Stock chart
+                    st.markdown("### Technical Analysis")
+                    fig = create_stock_chart(df)
+                    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True})
 
-                # AI Analysis in expandable section
-                with st.expander("AI Insights", expanded=True):
-                    with st.spinner('Generating AI analysis...'):
-                        analysis = get_stock_analysis(stock_info, metrics)
+                    # AI Analysis in expandable section
+                    with st.expander("AI Insights", expanded=True):
+                        with st.spinner('Generating AI analysis...'):
+                            analysis = get_stock_analysis(stock_info, metrics)
 
-                        if 'error' in analysis:
-                            st.error(analysis['error'])
-                        else:
-                            st.markdown(f"""
-                                <div class='ai-insight'>
-                                    <h4>Summary</h4>
-                                    <p>{analysis['summary']}</p>
-                                </div>
-                            """, unsafe_allow_html=True)
+                            if 'error' in analysis:
+                                st.error(analysis['error'])
+                            else:
+                                st.markdown(f"""
+                                    <div class='ai-insight'>
+                                        <h4>Summary</h4>
+                                        <p>{analysis['summary']}</p>
+                                    </div>
+                                """, unsafe_allow_html=True)
 
-                            col1, col2 = st.columns(2)
-                            with col1:
-                                st.markdown("#### Strengths")
-                                for strength in analysis['strengths']:
+                                col1, col2 = st.columns(2)
+                                with col1:
+                                    st.markdown("#### Strengths")
+                                    for strength in analysis['strengths']:
+                                        st.markdown(f"✅ {strength}")
+
+                                with col2:
+                                    st.markdown("#### Risks")
+                                    for risk in analysis['risks']:
+                                        st.markdown(f"⚠️ {risk}")
+
+                                st.markdown("#### Recommendation")
+                                st.info(analysis['recommendation'])
+
+                    # Export data
+                    with st.expander("Export Data"):
+                        csv = df.to_csv().encode('utf-8')
+                        st.download_button(
+                            label="Download CSV",
+                            data=csv,
+                            file_name=f"{symbols[0]}_stock_data.csv",
+                            mime="text/csv"
+                        )
+            else:
+                # Comparison View
+                with st.spinner('Fetching data for comparison...'):
+                    stock_data = get_multiple_stocks_data(st.session_state.symbols, time_period)
+
+                    # Create comparison chart
+                    st.markdown("### Stock Price Comparison")
+                    comparison_fig = create_comparison_chart(stock_data, time_period)
+                    st.plotly_chart(comparison_fig, use_container_width=True)
+
+                    # Display key metrics comparison
+                    with st.expander("Key Metrics Comparison", expanded=True):
+                        metrics_data = []
+                        for symbol, data in stock_data.items():
+                            metrics = get_key_metrics(data['info'])
+                            metrics['Symbol'] = symbol
+                            metrics['Company'] = data['info'].get('longName', symbol)
+                            metrics_data.append(metrics)
+
+                        metrics_df = pd.DataFrame(metrics_data)
+                        metrics_df.set_index('Symbol', inplace=True)
+                        st.dataframe(metrics_df, use_container_width=True)
+
+                    # Export data
+                    with st.expander("Export Data"):
+                        for symbol, data in stock_data.items():
+                            csv = data['history'].to_csv().encode('utf-8')
+                            st.download_button(
+                                label=f"Download {symbol} CSV",
+                                data=csv,
+                                file_name=f"{symbol}_stock_data.csv",
+                                mime="text/csv",
+                                key=f"download_{symbol}"
+                            )
+
+    elif section == "Portfolio Management":
+        st.title("📊 Portfolio Management")
+
+        with st.expander("Create New Portfolio", expanded=True):
+            risk_tolerance = st.select_slider(
+                "Risk Tolerance",
+                options=["Conservative", "Moderate", "Aggressive"],
+                value="Moderate"
+            )
+
+            investment_amount = st.number_input(
+                "Investment Amount ($)",
+                min_value=1000,
+                max_value=10000000,
+                value=10000,
+                step=1000
+            )
+
+            if st.button("Generate Portfolio Recommendation"):
+                with st.spinner("Analyzing and generating recommendations..."):
+                    try:
+                        portfolio = generate_portfolio_recommendation(
+                            risk_tolerance.lower(),
+                            investment_amount
+                        )
+
+                        # Display allocation
+                        st.subheader("Recommended Asset Allocation")
+                        cols = st.columns(len(portfolio["allocation"]))
+                        for i, (asset, percentage) in enumerate(portfolio["allocation"].items()):
+                            cols[i].metric(
+                                f"{asset.title()}",
+                                f"{percentage*100:.0f}%",
+                                f"${investment_amount * percentage:,.2f}"
+                            )
+
+                        # Display sector recommendations
+                        st.subheader("Recommended Sectors")
+                        for sector in portfolio["recommended_sectors"]:
+                            st.markdown(f"- {sector}")
+
+                    except Exception as e:
+                        st.error(f"Error generating portfolio recommendation: {str(e)}")
+
+        with st.expander("Portfolio Analysis", expanded=False):
+            portfolio_stocks = st.multiselect(
+                "Select stocks in your portfolio",
+                ["AAPL", "GOOGL", "MSFT", "AMZN", "META"],  # Add more options as needed
+                default=["AAPL"]
+            )
+
+            if st.button("Analyze Portfolio"):
+                with st.spinner("Analyzing portfolio..."):
+                    try:
+                        analysis = analyze_portfolio_health(portfolio_stocks)
+
+                        # Display portfolio metrics
+                        st.subheader("Portfolio Overview")
+
+                        # Sector allocation
+                        st.write("Sector Allocation")
+                        for sector, count in analysis["sector_allocation"].items():
+                            st.markdown(f"- {sector}: {count} stocks")
+
+                        # Stock recommendations
+                        st.subheader("Stock Analysis")
+                        for rec in analysis["recommendations"]:
+                            with st.expander(f"{rec['symbol']} Analysis"):
+                                st.write(rec["analysis"]["summary"])
+                                st.write("Strengths:")
+                                for strength in rec["analysis"]["strengths"]:
                                     st.markdown(f"✅ {strength}")
-
-                            with col2:
-                                st.markdown("#### Risks")
-                                for risk in analysis['risks']:
+                                st.write("Risks:")
+                                for risk in rec["analysis"]["risks"]:
                                     st.markdown(f"⚠️ {risk}")
 
-                            st.markdown("#### Recommendation")
-                            st.info(analysis['recommendation'])
+                    except Exception as e:
+                        st.error(f"Error analyzing portfolio: {str(e)}")
 
-                # Export data
-                with st.expander("Export Data"):
-                    csv = df.to_csv().encode('utf-8')
-                    st.download_button(
-                        label="Download CSV",
-                        data=csv,
-                        file_name=f"{symbols[0]}_stock_data.csv",
-                        mime="text/csv"
+    elif section == "Goal Planning":
+        st.title("🎯 Financial Goal Planning")
+
+        with st.expander("Create New Goal", expanded=True):
+            goal_type = st.selectbox(
+                "Goal Type",
+                ["Retirement", "House Down Payment", "Education", "Emergency Fund", "Travel"]
+            )
+
+            target_amount = st.number_input(
+                "Target Amount ($)",
+                min_value=1000,
+                max_value=10000000,
+                value=50000,
+                step=1000
+            )
+
+            target_date = st.date_input(
+                "Target Date",
+                value=pd.to_datetime("2025-12-31")
+            )
+
+            current_amount = st.number_input(
+                "Current Amount Saved ($)",
+                min_value=0,
+                max_value=10000000,
+                value=0,
+                step=1000
+            )
+
+            if st.button("Create Goal"):
+                try:
+                    goal = FinancialGoal(
+                        goal_type,
+                        target_amount,
+                        target_date.strftime("%Y-%m-%d"),
+                        current_amount
                     )
-        else:
-            # Comparison View
-            with st.spinner('Fetching data for comparison...'):
-                stock_data = get_multiple_stocks_data(st.session_state.symbols, time_period)
 
-                # Create comparison chart
-                st.markdown("### Stock Price Comparison")
-                comparison_fig = create_comparison_chart(stock_data, time_period)
-                st.plotly_chart(comparison_fig, use_container_width=True)
+                    # Analyze goal feasibility
+                    monthly_income = st.number_input("Monthly Income ($)", min_value=0, value=5000)
+                    monthly_expenses = st.number_input("Monthly Expenses ($)", min_value=0, value=3000)
 
-                # Display key metrics comparison
-                with st.expander("Key Metrics Comparison", expanded=True):
-                    metrics_data = []
-                    for symbol, data in stock_data.items():
-                        metrics = get_key_metrics(data['info'])
-                        metrics['Symbol'] = symbol
-                        metrics['Company'] = data['info'].get('longName', symbol)
-                        metrics_data.append(metrics)
+                    feasibility = analyze_goal_feasibility(goal, monthly_income, monthly_expenses)
 
-                    metrics_df = pd.DataFrame(metrics_data)
-                    metrics_df.set_index('Symbol', inplace=True)
-                    st.dataframe(metrics_df, use_container_width=True)
+                    # Display feasibility analysis
+                    st.subheader("Goal Analysis")
+                    st.metric("Progress", f"{goal.progress:.1f}%")
+                    st.metric("Monthly Savings Required",
+                             f"${feasibility['monthly_required']:,.2f}")
 
-                # Export data
-                with st.expander("Export Data"):
-                    for symbol, data in stock_data.items():
-                        csv = data['history'].to_csv().encode('utf-8')
-                        st.download_button(
-                            label=f"Download {symbol} CSV",
-                            data=csv,
-                            file_name=f"{symbol}_stock_data.csv",
-                            mime="text/csv",
-                            key=f"download_{symbol}"
+                    st.info(feasibility["recommendation"])
+
+                    # Generate investment plan
+                    risk_preference = st.select_slider(
+                        "Risk Tolerance",
+                        options=["Conservative", "Moderate", "Aggressive"],
+                        value="Moderate"
+                    )
+
+                    investment_plan = generate_investment_plan(goal, risk_preference.lower())
+
+                    # Display investment plan
+                    st.subheader("Investment Plan")
+                    st.write(f"Time Horizon: {investment_plan['time_horizon']:.1f} years")
+                    st.write(f"Recommended Strategy: {investment_plan['strategy'].title()}")
+
+                    # Show allocation
+                    cols = st.columns(len(investment_plan["allocation"]))
+                    for i, (asset, percentage) in enumerate(investment_plan["allocation"].items()):
+                        cols[i].metric(
+                            f"{asset.title()}",
+                            f"{percentage}%",
+                            f"${target_amount * (percentage/100):,.2f}"
                         )
+
+                except Exception as e:
+                    st.error(f"Error creating goal plan: {str(e)}")
 
     # Add Technical Indicators Explanation section at the bottom
     st.markdown("---")
