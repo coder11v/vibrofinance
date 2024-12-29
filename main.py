@@ -245,7 +245,9 @@ try:
     elif section == "Portfolio Management":
         st.title("📊 Portfolio Management")
 
-        with st.expander("Create New Portfolio", expanded=True):
+        tab1, tab2 = st.tabs(["Create Portfolio", "Analyze Portfolio"])
+
+        with tab1:
             risk_tolerance = st.select_slider(
                 "Risk Tolerance",
                 options=["Conservative", "Moderate", "Aggressive"],
@@ -267,7 +269,7 @@ try:
                  "Industrial", "Energy", "Materials", "Real Estate", "Utilities"]
             )
 
-            if st.button("Generate Portfolio Recommendation"):
+            if st.button("Generate Portfolio Recommendation", type="primary"):
                 with st.spinner("Analyzing and generating recommendations..."):
                     try:
                         # Get portfolio allocation
@@ -295,20 +297,19 @@ try:
                         )
 
                         for suggestion in suggestions:
-                            with st.expander(f"{suggestion['ticker']} - {suggestion['company']}"):
-                                st.write(suggestion['reason'])
+                            st.info(f"**{suggestion['ticker']} - {suggestion['company']}**\n\n{suggestion['reason']}")
 
                     except Exception as e:
                         st.error(f"Error generating portfolio recommendation: {str(e)}")
 
-        with st.expander("Portfolio Analysis", expanded=False):
+        with tab2:
             portfolio_stocks = st.multiselect(
                 "Select stocks in your portfolio",
                 ["AAPL", "GOOGL", "MSFT", "AMZN", "META"],  # Add more options as needed
                 default=["AAPL"]
             )
 
-            if st.button("Analyze Portfolio"):
+            if st.button("Analyze Portfolio", type="primary"):
                 with st.spinner("Analyzing portfolio..."):
                     try:
                         analysis = analyze_portfolio_health(portfolio_stocks)
@@ -317,21 +318,29 @@ try:
                         st.subheader("Portfolio Overview")
 
                         # Sector allocation
-                        st.write("Sector Allocation")
-                        for sector, count in analysis["sector_allocation"].items():
-                            st.markdown(f"- {sector}: {count} stocks")
+                        st.markdown("#### Sector Allocation")
+                        sector_cols = st.columns(len(analysis["sector_allocation"]))
+                        for i, (sector, count) in enumerate(analysis["sector_allocation"].items()):
+                            sector_cols[i].metric(sector, f"{count} stocks")
 
                         # Stock recommendations
-                        st.subheader("Stock Analysis")
+                        st.markdown("#### Stock Analysis")
                         for rec in analysis["recommendations"]:
-                            with st.expander(f"{rec['symbol']} Analysis"):
+                            st.markdown(f"### {rec['symbol']}")
+                            col1, col2 = st.columns(2)
+
+                            with col1:
+                                st.markdown("**Analysis Summary**")
                                 st.write(rec["analysis"]["summary"])
-                                st.write("Strengths:")
+
+                            with col2:
+                                st.markdown("**Key Points**")
+                                st.markdown("✅ **Strengths:**")
                                 for strength in rec["analysis"]["strengths"]:
-                                    st.markdown(f"✅ {strength}")
-                                st.write("Risks:")
+                                    st.markdown(f"- {strength}")
+                                st.markdown("⚠️ **Risks:**")
                                 for risk in rec["analysis"]["risks"]:
-                                    st.markdown(f"⚠️ {risk}")
+                                    st.markdown(f"- {risk}")
 
                     except Exception as e:
                         st.error(f"Error analyzing portfolio: {str(e)}")
