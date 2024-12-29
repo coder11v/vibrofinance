@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from utils.stock_data import get_stock_data, get_multiple_stocks_data, get_key_metrics, format_large_number, calculate_technical_indicators
-from utils.ai_advisor import get_stock_analysis
+from utils.ai_advisor import get_stock_analysis, ask_follow_up_question, suggest_stocks
 from utils.chart_helper import create_stock_chart, create_comparison_chart
 from utils.portfolio_manager import generate_portfolio_recommendation, analyze_portfolio_health
 from utils.goal_planner import FinancialGoal, analyze_goal_feasibility, generate_investment_plan
@@ -95,13 +95,14 @@ try:
                     # Calculate technical indicators
                     df = calculate_technical_indicators(hist_data)
 
-                    # Company header
-                    col1, col2 = st.columns([2,1])
-                    with col1:
+                    # Two-column layout
+                    col_data, col_ai = st.columns([1, 1])
+
+                    with col_data:
+                        # Company header
                         st.markdown(f"## {stock_info.get('longName', symbols[0])}")
                         st.markdown(f"*{stock_info.get('sector', '')} | {stock_info.get('industry', '')}*")
 
-                    with col2:
                         current_price = stock_info.get('currentPrice', 0)
                         price_change = stock_info.get('regularMarketChangePercent', 0)
                         price_color = "stock-up" if price_change >= 0 else "stock-down"
@@ -112,11 +113,11 @@ try:
                             </div>
                         """, unsafe_allow_html=True)
 
-                    # Key metrics in expandable section
-                    with st.expander("Key Metrics", expanded=True):
-                        metric_cols = st.columns(4)
+                        # Key metrics
+                        st.markdown("### Key Metrics")
+                        metric_cols = st.columns(2)
                         for i, (metric, value) in enumerate(metrics.items()):
-                            with metric_cols[i % 4]:
+                            with metric_cols[i % 2]:
                                 st.markdown(f"""
                                     <div class='metric-card'>
                                         <h4>{metric}</h4>
@@ -124,13 +125,13 @@ try:
                                     </div>
                                 """, unsafe_allow_html=True)
 
-                    # Stock chart
-                    st.markdown("### Technical Analysis")
-                    fig = create_stock_chart(df)
-                    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True})
+                        # Stock chart
+                        st.markdown("### Technical Analysis")
+                        fig = create_stock_chart(df)
+                        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True})
 
-                    # AI Analysis in expandable section
-                    with st.expander("AI Insights", expanded=True):
+                    with col_ai:
+                        st.markdown("### AI Insights")
                         with st.spinner('Generating AI analysis...'):
                             analysis = get_stock_analysis(stock_info, metrics)
 
@@ -144,29 +145,58 @@ try:
                                     </div>
                                 """, unsafe_allow_html=True)
 
-                                col1, col2 = st.columns(2)
-                                with col1:
-                                    st.markdown("#### Strengths")
-                                    for strength in analysis['strengths']:
-                                        st.markdown(f"✅ {strength}")
+                                with st.expander("Strengths & Risks", expanded=True):
+                                    col1, col2 = st.columns(2)
+                                    with col1:
+                                        st.markdown("#### Strengths")
+                                        for strength in analysis['strengths']:
+                                            st.markdown(f"✅ {strength}")
 
-                                with col2:
-                                    st.markdown("#### Risks")
-                                    for risk in analysis['risks']:
-                                        st.markdown(f"⚠️ {risk}")
+                                    with col2:
+                                        st.markdown("#### Risks")
+                                        for risk in analysis['risks']:
+                                            st.markdown(f"⚠️ {risk}")
 
                                 st.markdown("#### Recommendation")
                                 st.info(analysis['recommendation'])
 
-                    # Export data
-                    with st.expander("Export Data"):
-                        csv = df.to_csv().encode('utf-8')
-                        st.download_button(
-                            label="Download CSV",
-                            data=csv,
-                            file_name=f"{symbols[0]}_stock_data.csv",
-                            mime="text/csv"
-                        )
+                                # Interactive AI Chat
+                                st.markdown("### Ask AI Analyst")
+
+                                # Suggested questions
+                                st.markdown("#### Suggested Questions")
+                                for question in analysis['suggested_questions']:
+                                    if st.button(question, key=f"q_{question}"):
+                                        with st.spinner('Analyzing...'):
+                                            answer = ask_follow_up_question(stock_info, metrics, question)
+                                            st.markdown(f"""
+                                                <div class='ai-insight'>
+                                                    <p>{answer}</p>
+                                                </div>
+                                            """, unsafe_allow_html=True)
+
+                                # Custom questions
+                                custom_question = st.text_input("Ask your own question:")
+                                if st.button("Ask") and custom_question:
+                                    with st.spinner('Analyzing...'):
+                                        answer = ask_follow_up_question(stock_info, metrics, custom_question)
+                                        st.markdown(f"""
+                                            <div class='ai-insight'>
+                                                <p>{answer}</p>
+                                            </div>
+                                        """, unsafe_allow_html=True)
+
+                    # Export data moved to data column
+                    with col_data:
+                        with st.expander("Export Data"):
+                            csv = df.to_csv().encode('utf-8')
+                            st.download_button(
+                                label="Download CSV",
+                                data=csv,
+                                file_name=f"{symbols[0]}_stock_data.csv",
+                                mime="text/csv"
+                            )
+
             else:
                 # Comparison View
                 with st.spinner('Fetching data for comparison...'):
@@ -220,9 +250,17 @@ try:
                 step=1000
             )
 
+            # Add sector preferences
+            sectors = st.multiselect(
+                "Preferred Sectors (Optional)",
+                ["Technology", "Healthcare", "Financial Services", "Consumer Cyclical", 
+                 "Industrial", "Energy", "Materials", "Real Estate", "Utilities"]
+            )
+
             if st.button("Generate Portfolio Recommendation"):
                 with st.spinner("Analyzing and generating recommendations..."):
                     try:
+                        # Get portfolio allocation
                         portfolio = generate_portfolio_recommendation(
                             risk_tolerance.lower(),
                             investment_amount
@@ -238,10 +276,17 @@ try:
                                 f"${investment_amount * percentage:,.2f}"
                             )
 
-                        # Display sector recommendations
-                        st.subheader("Recommended Sectors")
-                        for sector in portfolio["recommended_sectors"]:
-                            st.markdown(f"- {sector}")
+                        # Get and display stock suggestions
+                        st.subheader("Recommended Stocks")
+                        suggestions = suggest_stocks(
+                            risk_tolerance.lower(), 
+                            investment_amount,
+                            sectors if sectors else None
+                        )
+
+                        for suggestion in suggestions:
+                            with st.expander(f"{suggestion['ticker']} - {suggestion['company']}"):
+                                st.write(suggestion['reason'])
 
                     except Exception as e:
                         st.error(f"Error generating portfolio recommendation: {str(e)}")
@@ -330,7 +375,7 @@ try:
                     st.subheader("Goal Analysis")
                     st.metric("Progress", f"{goal.progress:.1f}%")
                     st.metric("Monthly Savings Required",
-                             f"${feasibility['monthly_required']:,.2f}")
+                              f"${feasibility['monthly_required']:,.2f}")
 
                     st.info(feasibility["recommendation"])
 

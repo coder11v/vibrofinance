@@ -26,12 +26,12 @@ def clean_json_string(text):
 
 def validate_analysis(analysis):
     """Validate that the analysis contains all required fields"""
-    required_fields = ['summary', 'strengths', 'risks', 'recommendation']
+    required_fields = ['summary', 'strengths', 'risks', 'recommendation', 'suggested_questions']
     for field in required_fields:
         if field not in analysis:
             raise ValueError(f"Missing required field: {field}")
-        if field in ['strengths', 'risks'] and not isinstance(analysis[field], list):
-            analysis[field] = [analysis[field]]  # Convert to list if it's a single string
+        if field in ['strengths', 'risks', 'suggested_questions'] and not isinstance(analysis[field], list):
+            analysis[field] = [analysis[field]]
 
 def get_stock_analysis(stock_info, metrics):
     """Get AI-powered analysis of the stock"""
@@ -55,7 +55,12 @@ def get_stock_analysis(stock_info, metrics):
             "summary": "A concise summary of the stock's current position and outlook",
             "strengths": ["strength1", "strength2", "strength3"],
             "risks": ["risk1", "risk2", "risk3"],
-            "recommendation": "A clear buy/hold/sell recommendation with brief explanation"
+            "recommendation": "A clear buy/hold/sell recommendation with brief explanation",
+            "suggested_questions": [
+                "What are the main competitors?",
+                "How does the P/E ratio compare to industry average?",
+                "What are the growth prospects for next year?"
+            ]
         }}
         """
 
@@ -85,7 +90,8 @@ def get_stock_analysis(stock_info, metrics):
             "summary": "Unable to generate AI analysis: API key is missing.",
             "strengths": ["Please set up the Gemini API key to enable AI insights."],
             "risks": ["Contact administrator to configure the API key."],
-            "recommendation": "API configuration required."
+            "recommendation": "API configuration required.",
+            "suggested_questions": []
         }
     except json.JSONDecodeError as je:
         logger.error(f"JSON parsing error: {str(je)}")
@@ -93,7 +99,8 @@ def get_stock_analysis(stock_info, metrics):
             "summary": "Unable to process AI analysis response.",
             "strengths": ["Data is available but couldn't be processed."],
             "risks": ["Try refreshing or analyzing a different stock."],
-            "recommendation": "Please try again with a different stock or time period."
+            "recommendation": "Please try again with a different stock or time period.",
+            "suggested_questions": []
         }
     except Exception as e:
         logger.error(f"Error generating AI analysis: {str(e)}")
@@ -101,5 +108,77 @@ def get_stock_analysis(stock_info, metrics):
             "summary": "Unable to generate AI analysis at this time.",
             "strengths": ["Technical issue encountered while generating analysis."],
             "risks": ["Temporary API or processing error."],
-            "recommendation": "Please try again in a few moments."
+            "recommendation": "Please try again in a few moments.",
+            "suggested_questions": []
         }
+
+def ask_follow_up_question(stock_info, metrics, question):
+    """Handle follow-up questions about the stock"""
+    try:
+        logger.info(f"Processing follow-up question for {stock_info.get('symbol', 'Unknown Stock')}")
+
+        prompt = f"""
+        You are a professional financial analyst. Answer this specific question about the stock:
+
+        Stock Information:
+        - Company: {stock_info.get('longName', 'Unknown')}
+        - Sector: {stock_info.get('sector', 'Unknown')}
+        - Current Price: ${stock_info.get('currentPrice', 'N/A')}
+        - P/E Ratio: {metrics.get('PE Ratio', 'N/A')}
+        - Market Cap: {metrics.get('Market Cap', 'N/A')}
+        - EPS: {metrics.get('EPS', 'N/A')}
+        - Dividend Yield: {metrics.get('Dividend Yield', 'N/A')}
+
+        Question: {question}
+
+        Provide a detailed but concise answer focusing specifically on the question asked.
+        """
+
+        if not GEMINI_API_KEY:
+            raise ValueError("Gemini API key is missing")
+
+        model = genai.GenerativeModel('gemini-pro')
+        response = model.generate_content(prompt)
+
+        return response.text
+
+    except Exception as e:
+        logger.error(f"Error processing follow-up question: {str(e)}")
+        return "I apologize, but I'm unable to process your question at this time. Please try again later."
+
+def suggest_stocks(risk_profile, investment_amount, sectors=None):
+    """Get AI-powered stock suggestions based on risk profile and criteria"""
+    try:
+        logger.info(f"Generating stock suggestions for {risk_profile} risk profile")
+
+        prompt = f"""
+        As a financial advisor, suggest 5 stock ticker symbols based on the following criteria:
+
+        Risk Profile: {risk_profile}
+        Investment Amount: ${investment_amount}
+        {f'Preferred Sectors: {", ".join(sectors)}' if sectors else ''}
+
+        Provide your suggestions in the following JSON format:
+        {{
+            "suggestions": [
+                {{
+                    "ticker": "Symbol",
+                    "company": "Company Name",
+                    "reason": "Brief explanation for recommendation"
+                }}
+            ]
+        }}
+        """
+
+        if not GEMINI_API_KEY:
+            raise ValueError("Gemini API key is missing")
+
+        model = genai.GenerativeModel('gemini-pro')
+        response = model.generate_content(prompt)
+
+        suggestions = json.loads(clean_json_string(response.text))
+        return suggestions.get('suggestions', [])
+
+    except Exception as e:
+        logger.error(f"Error generating stock suggestions: {str(e)}")
+        return []
