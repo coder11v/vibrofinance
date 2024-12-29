@@ -13,9 +13,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
     menu_items={
-        'Get Help': 'https://github.com/your-repo/vibro-finance',
-        'Report a bug': "https://github.com/your-repo/vibro-finance/issues",
-        'About': "ViBro Finance - AI-Powered Stock Analysis Platform"
+        'About': "ViBro Finance - Your AI-Powered Financial Assistant"
     }
 )
 
@@ -46,13 +44,13 @@ st.markdown("""
         <button class='nav-button{2}' onclick='window.location.href="?section=Goal+Planning"'>Goal Planning</button>
     </div>
 """.format(
-    " active" if "section" not in st.experimental_get_query_params() or st.experimental_get_query_params().get("section", ["Market Analysis"])[0] == "Market Analysis" else "",
-    " active" if st.experimental_get_query_params().get("section", [""])[0] == "Portfolio Management" else "",
-    " active" if st.experimental_get_query_params().get("section", [""])[0] == "Goal Planning" else ""
+    " active" if "section" not in st.query_params or st.query_params.get("section", "Market Analysis") == "Market Analysis" else "",
+    " active" if st.query_params.get("section", "") == "Portfolio Management" else "",
+    " active" if st.query_params.get("section", "") == "Goal Planning" else ""
 ), unsafe_allow_html=True)
 
 # Get current section from URL parameters
-section = st.experimental_get_query_params().get("section", ["Market Analysis"])[0]
+section = st.query_params.get("section", "Market Analysis")
 
 if section == "Market Analysis":
     analysis_type = st.radio(
