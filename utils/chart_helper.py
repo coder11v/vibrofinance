@@ -76,3 +76,40 @@ def create_stock_chart(df):
     fig.update_yaxes(title_text="RSI", row=2, col=1)
 
     return fig
+
+def create_comparison_chart(stock_data_dict, period):
+    """Create a comparison chart for multiple stocks"""
+    fig = go.Figure()
+
+    colors = ['#00AB41', '#0066CC', '#FF4B4B', '#FFB400']  # Add more colors if needed
+
+    for i, (symbol, data) in enumerate(stock_data_dict.items()):
+        df = data['history']
+        normalized_prices = (df['Close'] / df['Close'].iloc[0]) * 100
+
+        fig.add_trace(
+            go.Scatter(
+                x=df.index,
+                y=normalized_prices,
+                name=symbol,
+                line=dict(color=colors[i % len(colors)], width=2)
+            )
+        )
+
+    fig.update_layout(
+        title="Comparative Stock Performance (Normalized to 100)",
+        xaxis_title="Date",
+        yaxis_title="Normalized Price",
+        height=500,
+        template="plotly_white",
+        showlegend=True,
+        legend=dict(
+            yanchor="top",
+            y=0.99,
+            xanchor="left",
+            x=0.01
+        ),
+        hovermode='x unified'
+    )
+
+    return fig

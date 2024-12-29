@@ -12,6 +12,20 @@ def get_stock_data(symbol, period='1y'):
     except Exception as e:
         raise Exception(f"Error fetching stock data: {e}")
 
+def get_multiple_stocks_data(symbols, period='1y'):
+    """Fetch data for multiple stocks"""
+    try:
+        data = {}
+        for symbol in symbols:
+            hist, info = get_stock_data(symbol, period)
+            data[symbol] = {
+                'history': hist,
+                'info': info
+            }
+        return data
+    except Exception as e:
+        raise Exception(f"Error fetching multiple stocks data: {e}")
+
 def get_key_metrics(info):
     """Extract key financial metrics"""
     metrics = {
@@ -29,7 +43,7 @@ def format_large_number(num):
     """Format large numbers for display"""
     if not isinstance(num, (int, float)) or pd.isna(num):
         return 'N/A'
-    
+
     if num >= 1e12:
         return f'${num/1e12:.2f}T'
     elif num >= 1e9:
@@ -51,7 +65,11 @@ def calculate_rsi(prices, periods=14):
     delta = prices.diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=periods).mean()
     loss = (-delta.where(delta < 0, 0)).rolling(window=periods).mean()
-    
+
     rs = gain / loss
     rsi = 100 - (100 / (1 + rs))
     return rsi
+
+def normalize_stock_prices(df):
+    """Normalize stock prices to start from 100 for comparison"""
+    return (df['Close'] / df['Close'].iloc[0]) * 100
