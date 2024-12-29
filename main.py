@@ -61,7 +61,7 @@ if section == "Market Analysis":
     )
 
     if analysis_type == "Single Stock":
-        symbol = st.text_input("Enter Stock Symbol", value="AAPL").upper()
+        symbol = st.text_input("Enter Stock Symbol", value="ViBro").upper()
         symbols = [symbol]
     else:
         col1, col2, col3, col4 = st.columns(4)
@@ -141,8 +141,8 @@ try:
                         st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True})
 
                     with col_ai:
-                        st.markdown("### AI Insights")
-                        with st.spinner('Generating AI analysis...'):
+                        st.markdown("### ViBro Insights")
+                        with st.spinner('Generating ViBro analysis...'):
                             analysis = get_stock_analysis(stock_info, metrics)
 
                             if 'error' in analysis:
@@ -171,7 +171,7 @@ try:
                                 st.info(analysis['recommendation'])
 
                                 # Interactive AI Chat
-                                st.markdown("### Ask AI Analyst")
+                                st.markdown("### Ask ViBro Finance")
 
                                 # Suggested questions
                                 st.markdown("#### Suggested Questions")
@@ -306,7 +306,7 @@ try:
             portfolio_stocks = st.multiselect(
                 "Select stocks in your portfolio",
                 ["AAPL", "GOOGL", "MSFT", "AMZN", "META"],  # Add more options as needed
-                default=["AAPL"]
+                default=["ViBro"]
             )
 
             if st.button("Analyze Portfolio", type="primary"):
@@ -428,7 +428,7 @@ try:
     st.markdown("---")
     with st.expander("📚 Understanding Technical Indicators", expanded=False):
         st.markdown("""
-        ### Stock Chart Components
+        ### Stock Chart Components - A ViBro Guide
 
         #### OHLC (Candlestick Chart)
         - **O**pen: The stock's price at market open
@@ -478,6 +478,12 @@ try:
     st.markdown("""
     ### Disclaimer
     Quotes are not sourced from all markets and may be delayed by up to 20 minutes. All information provided on this platform is offered "as is" and is intended solely for informational purposes. It should not be considered as investment advice, financial planning guidance, or a recommendation to buy or sell any securities. Please consult a qualified financial advisor before making any trading or investment decisions.
+    
+    ### ViBro Finance
+    Thank you for choosing ViBro Finance as your trading partner. We are committed to providing you with the best information. If you have any questions or concerns, please contact our support team at [hi@veerbajaj.com](mailto:hi@veerbajaj.com).
+
+    [Veer Bajaj ↗](https://veerbajaj.com)
+    
     """)
 
 except Exception as e:
