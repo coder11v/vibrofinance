@@ -8,6 +8,7 @@ from utils.goal_planner import FinancialGoal, analyze_goal_feasibility, generate
 from utils.auth import AuthManager
 from utils.ml_predictor import StockPredictor # Added import
 from datetime import datetime # Added import
+from pages.auth import init_auth, login_page, logout  # Re-added import
 
 # Page configuration
 st.set_page_config(
@@ -145,10 +146,10 @@ else:
 
                                 # Show prediction confidence
                                 st.info(f"""
-                                **ML Prediction Confidence:**
-                                - Model Accuracy: {confidence['test_score']:.2%}
-                                - Prediction Quality: {confidence['prediction_quality']}
-                                - Predicting next {len(predictions)} trading days
+                                    **ML Prediction Confidence:**
+                                    - Model Accuracy: {confidence['test_score']:.2%}
+                                    - Prediction Quality: {confidence['prediction_quality']}
+                                    - Predicting next {len(predictions)} trading days
                                 """)
                             except Exception as e:
                                 st.warning(f"Could not generate predictions: {str(e)}")
@@ -523,7 +524,7 @@ else:
                 st.session_state.chat_messages = []
 
             # Message input
-            chat_input = st.text_input("Type your message:", key="chat_input")
+            chat_input = st.text_input("Type your message (Markdown supported):", key="chat_input")
             if st.button("Send", type="primary"):
                 if chat_input.strip():
                     # Save message to database
@@ -547,7 +548,7 @@ else:
                             <div style='text-align: right; margin: 10px 0;'>
                                 <div style='display: inline-block; background-color: #00AB41; color: white; 
                                       padding: 10px; border-radius: 15px; max-width: 70%;'>
-                                    <p style='margin: 0;'>{msg['message']}</p>
+                                    <div class="markdown-content">{st.markdown(msg['message'], unsafe_allow_html=True)}</div>
                                     <small style='opacity: 0.7;'>{formatted_time}</small>
                                 </div>
                             </div>
@@ -558,7 +559,7 @@ else:
                                 <div style='display: inline-block; background-color: #262730; 
                                       padding: 10px; border-radius: 15px; max-width: 70%;'>
                                     <small style='color: #00AB41;'>{msg['username']}</small>
-                                    <p style='margin: 0;'>{msg['message']}</p>
+                                    <div class="markdown-content">{st.markdown(msg['message'], unsafe_allow_html=True)}</div>
                                     <small style='opacity: 0.7;'>{formatted_time}</small>
                                 </div>
                             </div>
