@@ -5,6 +5,7 @@ from utils.ai_advisor import get_stock_analysis, ask_follow_up_question, suggest
 from utils.chart_helper import create_stock_chart, create_comparison_chart
 from utils.portfolio_manager import generate_portfolio_recommendation, analyze_portfolio_health
 from utils.goal_planner import FinancialGoal, analyze_goal_feasibility, generate_investment_plan
+import time
 
 # Page configuration
 st.set_page_config(
@@ -33,12 +34,12 @@ with open('styles/custom.css') as f:
 
 # Header
 st.title("📈 ViBro Finance")
-st.markdown("### AI-Powered Stock Analysis Platform")
+st.markdown("### Your AI-Powered Financial Assistant")
 
 # Navigation
-nav_options = ["Market Analysis", "Portfolio Management", "Goal Planning"]
+nav_options = ["Market Analysis", "ViBro Assistant"]
 st.markdown("<div class='nav-container'>", unsafe_allow_html=True)
-cols = st.columns(3)
+cols = st.columns(2)
 for i, option in enumerate(nav_options):
     with cols[i]:
         if st.button(
@@ -52,6 +53,17 @@ st.markdown("</div>", unsafe_allow_html=True)
 
 # Get current section from URL parameters
 section = st.query_params.get("section", "Market Analysis")
+
+# Initialize chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {"role": "assistant", "content": "Hello! I'm ViBro, your AI financial assistant. I can help you with:\n\n" +
+         "📊 Portfolio Management\n" +
+         "🎯 Goal Planning\n" +
+         "💰 Investment Recommendations\n" +
+         "📈 Market Analysis\n\n" +
+         "What would you like to know about?"}
+    ]
 
 if section == "Market Analysis":
     analysis_type = st.radio(
@@ -242,187 +254,78 @@ try:
                                 key=f"download_{symbol}"
                             )
 
-    elif section == "Portfolio Management":
-        st.title("📊 Portfolio Management")
+    elif section == "ViBro Assistant":
+        # Chat container
+        st.markdown("""
+            <div class='chat-container'>
+                <div class='chat-messages'>
+        """, unsafe_allow_html=True)
 
-        tab1, tab2 = st.tabs(["Create Portfolio", "Analyze Portfolio"])
+        # Display chat messages
+        for message in st.session_state.messages:
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
 
-        with tab1:
-            risk_tolerance = st.select_slider(
-                "Risk Tolerance",
-                options=["Conservative", "Moderate", "Aggressive"],
-                value="Moderate"
-            )
+        # Chat input
+        if prompt := st.chat_input("Ask me anything about your finances..."):
+            # Add user message to chat history
+            st.session_state.messages.append({"role": "user", "content": prompt})
 
-            investment_amount = st.number_input(
-                "Investment Amount ($)",
-                min_value=1000,
-                max_value=10000000,
-                value=10000,
-                step=1000
-            )
+            # Display user message
+            with st.chat_message("user"):
+                st.markdown(prompt)
 
-            # Add sector preferences
-            sectors = st.multiselect(
-                "Preferred Sectors (Optional)",
-                ["Technology", "Healthcare", "Financial Services", "Consumer Cyclical",
-                 "Industrial", "Energy", "Materials", "Real Estate", "Utilities"]
-            )
+            # Display assistant response
+            with st.chat_message("assistant"):
+                message_placeholder = st.empty()
+                full_response = ""
 
-            if st.button("Generate Portfolio Recommendation", type="primary"):
-                with st.spinner("Analyzing and generating recommendations..."):
-                    try:
-                        # Get portfolio allocation
-                        portfolio = generate_portfolio_recommendation(
-                            risk_tolerance.lower(),
-                            investment_amount
-                        )
+                # Simulate stream of response with a typing indicator
+                with st.spinner("ViBro is thinking..."):
+                    # Process the user's message and generate a response
+                    if "portfolio" in prompt.lower() or "stocks" in prompt.lower():
+                        risk_tolerance = "moderate"
+                        investment_amount = 10000
+                        try:
+                            suggestions = suggest_stocks(risk_tolerance, investment_amount)
+                            response = "Based on your interest in portfolio management, here are some stock suggestions:\n\n"
+                            for suggestion in suggestions:
+                                response += f"📈 **{suggestion['ticker']} - {suggestion['company']}**\n{suggestion['reason']}\n\n"
+                        except Exception as e:
+                            response = f"Error generating portfolio recommendations: {str(e)}"
+                    elif "goal" in prompt.lower() or "planning" in prompt.lower():
+                        response = "Let's discuss your financial goals. To help you better, I'll need to know:\n\n" + \
+                                 "1. What type of goal are you planning for? (e.g., retirement, house, education)\n" + \
+                                 "2. What's your target amount?\n" + \
+                                 "3. When do you want to achieve this goal?\n\n" + \
+                                 "Share these details, and I'll create a personalized plan for you."
+                    else:
+                        response = "I can help you with portfolio management, goal planning, and investment recommendations. " + \
+                                 "What specific aspect would you like to explore?"
 
-                        # Display allocation
-                        st.subheader("Recommended Asset Allocation")
-                        cols = st.columns(len(portfolio["allocation"]))
-                        for i, (asset, percentage) in enumerate(portfolio["allocation"].items()):
-                            cols[i].metric(
-                                f"{asset.title()}",
-                                f"{percentage*100:.0f}%",
-                                f"${investment_amount * percentage:,.2f}"
-                            )
+                    # Simulate typing
+                    for chunk in response.split():
+                        full_response += chunk + " "
+                        time.sleep(0.05)
+                        message_placeholder.markdown(full_response + "▌")
+                    message_placeholder.markdown(full_response)
 
-                        # Get and display stock suggestions
-                        st.subheader("Recommended Stocks")
-                        suggestions = suggest_stocks(
-                            risk_tolerance.lower(),
-                            investment_amount,
-                            sectors if sectors else None
-                        )
+            # Add assistant response to chat history
+            st.session_state.messages.append({"role": "assistant", "content": full_response})
 
-                        for suggestion in suggestions:
-                            st.info(f"**{suggestion['ticker']} - {suggestion['company']}**\n\n{suggestion['reason']}")
+        # Add disclaimer at the bottom of the page
+        st.markdown("---")
+        st.markdown("""
+        ### Disclaimer
+        Quotes are not sourced from all markets and may be delayed by up to 20 minutes. All information provided on this platform is offered "as is" and is intended solely for informational purposes. It should not be considered as investment advice, financial planning guidance, or a recommendation to buy or sell any securities. Please consult a qualified financial advisor before making any trading or investment decisions.
 
-                    except Exception as e:
-                        st.error(f"Error generating portfolio recommendation: {str(e)}")
+        ### ViBro Finance
+        Thank you for choosing ViBro Finance as your trading partner. We are committed to providing you with the best information. If you have any questions or concerns, please contact our support team at [hi@veerbajaj.com](mailto:hi@veerbajaj.com).
 
-        with tab2:
-            portfolio_stocks = st.multiselect(
-                "Select stocks in your portfolio",
-                ["AAPL", "GOOGL", "MSFT", "AMZN", "META"],  # Add more options as needed
-                default=["ViBro"]
-            )
+        [Veer Bajaj ↗](https://veerbajaj.com)
 
-            if st.button("Analyze Portfolio", type="primary"):
-                with st.spinner("Analyzing portfolio..."):
-                    try:
-                        analysis = analyze_portfolio_health(portfolio_stocks)
+        """)
 
-                        # Display portfolio metrics
-                        st.subheader("Portfolio Overview")
-
-                        # Sector allocation
-                        st.markdown("#### Sector Allocation")
-                        sector_cols = st.columns(len(analysis["sector_allocation"]))
-                        for i, (sector, count) in enumerate(analysis["sector_allocation"].items()):
-                            sector_cols[i].metric(sector, f"{count} stocks")
-
-                        # Stock recommendations
-                        st.markdown("#### Stock Analysis")
-                        for rec in analysis["recommendations"]:
-                            st.markdown(f"### {rec['symbol']}")
-                            col1, col2 = st.columns(2)
-
-                            with col1:
-                                st.markdown("**Analysis Summary**")
-                                st.write(rec["analysis"]["summary"])
-
-                            with col2:
-                                st.markdown("**Key Points**")
-                                st.markdown("✅ **Strengths:**")
-                                for strength in rec["analysis"]["strengths"]:
-                                    st.markdown(f"- {strength}")
-                                st.markdown("⚠️ **Risks:**")
-                                for risk in rec["analysis"]["risks"]:
-                                    st.markdown(f"- {risk}")
-
-                    except Exception as e:
-                        st.error(f"Error analyzing portfolio: {str(e)}")
-
-    elif section == "Goal Planning":
-        st.title("🎯 Financial Goal Planning")
-
-        with st.expander("Create New Goal", expanded=True):
-            goal_type = st.selectbox(
-                "Goal Type",
-                ["Retirement", "House Down Payment", "Education", "Emergency Fund", "Travel"]
-            )
-
-            target_amount = st.number_input(
-                "Target Amount ($)",
-                min_value=1000,
-                max_value=10000000,
-                value=50000,
-                step=1000
-            )
-
-            target_date = st.date_input(
-                "Target Date",
-                value=pd.to_datetime("2025-12-31")
-            )
-
-            current_amount = st.number_input(
-                "Current Amount Saved ($)",
-                min_value=0,
-                max_value=10000000,
-                value=0,
-                step=1000
-            )
-
-            if st.button("Create Goal"):
-                try:
-                    goal = FinancialGoal(
-                        goal_type,
-                        target_amount,
-                        target_date.strftime("%Y-%m-%d"),
-                        current_amount
-                    )
-
-                    # Analyze goal feasibility
-                    monthly_income = st.number_input("Monthly Income ($)", min_value=0, value=5000)
-                    monthly_expenses = st.number_input("Monthly Expenses ($)", min_value=0, value=3000)
-
-                    feasibility = analyze_goal_feasibility(goal, monthly_income, monthly_expenses)
-
-                    # Display feasibility analysis
-                    st.subheader("Goal Analysis")
-                    st.metric("Progress", f"{goal.progress:.1f}%")
-                    st.metric("Monthly Savings Required",
-                              f"${feasibility['monthly_required']:,.2f}")
-
-                    st.info(feasibility["recommendation"])
-
-                    # Generate investment plan
-                    risk_preference = st.select_slider(
-                        "Risk Tolerance",
-                        options=["Conservative", "Moderate", "Aggressive"],
-                        value="Moderate"
-                    )
-
-                    investment_plan = generate_investment_plan(goal, risk_preference.lower())
-
-                    # Display investment plan
-                    st.subheader("Investment Plan")
-                    st.write(f"Time Horizon: {investment_plan['time_horizon']:.1f} years")
-                    st.write(f"Recommended Strategy: {investment_plan['strategy'].title()}")
-
-                    # Show allocation
-                    cols = st.columns(len(investment_plan["allocation"]))
-                    for i, (asset, percentage) in enumerate(investment_plan["allocation"].items()):
-                        cols[i].metric(
-                            f"{asset.title()}",
-                            f"{percentage}%",
-                            f"${target_amount * (percentage/100):,.2f}"
-                        )
-
-                except Exception as e:
-                    st.error(f"Error creating goal plan: {str(e)}")
 
     # Add Technical Indicators Explanation section at the bottom
     st.markdown("---")
@@ -478,12 +381,12 @@ try:
     st.markdown("""
     ### Disclaimer
     Quotes are not sourced from all markets and may be delayed by up to 20 minutes. All information provided on this platform is offered "as is" and is intended solely for informational purposes. It should not be considered as investment advice, financial planning guidance, or a recommendation to buy or sell any securities. Please consult a qualified financial advisor before making any trading or investment decisions.
-    
+
     ### ViBro Finance
     Thank you for choosing ViBro Finance as your trading partner. We are committed to providing you with the best information. If you have any questions or concerns, please contact our support team at [hi@veerbajaj.com](mailto:hi@veerbajaj.com).
 
     [Veer Bajaj ↗](https://veerbajaj.com)
-    
+
     """)
 
 except Exception as e:
