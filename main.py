@@ -523,6 +523,18 @@ else:
             if "chat_messages" not in st.session_state:
                 st.session_state.chat_messages = []
 
+            # Show superuser controls if applicable
+            is_superuser = auth_manager.is_superuser(st.session_state.username)
+            if is_superuser:
+                with st.expander("🛡️ Superuser Controls"):
+                    st.markdown("### User Management")
+                    users = auth_manager.get_all_users(st.session_state.username)
+                    if users:
+                        user_df = pd.DataFrame(users)
+                        st.dataframe(user_df)
+                    else:
+                        st.warning("Unable to fetch users list")
+
             # Message input
             chat_input = st.text_input("Type your message (Markdown supported):", key="chat_input")
             if st.button("Send", type="primary"):
@@ -563,6 +575,13 @@ else:
                                 <small style='opacity: 0.7;'>{formatted_time}</small>
                             </div>
                         """, unsafe_allow_html=True)
+
+                    # Show delete button for superuser
+                    if is_superuser:
+                        if st.button("🗑️ Delete", key=f"delete_{msg['id']}"):
+                            if auth_manager.delete_message(msg['id'], st.session_state.username):
+                                st.success("Message deleted!")
+                                st.rerun()
 
                 for msg in reversed(messages):
                     is_current_user = msg['username'] == st.session_state.username

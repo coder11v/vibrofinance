@@ -13,6 +13,7 @@ class AuthManager:
     def __init__(self, db_path: str = "data/users.json"):
         self.db_path = db_path
         self._ensure_db_exists()
+        self.SUPERUSER = "theyounginvestor"
 
     def _ensure_db_exists(self):
         """Ensure the database directory and file exist"""
@@ -46,6 +47,10 @@ class AuthManager:
         except Exception as e:
             logger.error(f"Error saving database: {str(e)}")
             raise
+
+    def is_superuser(self, username: str) -> bool:
+        """Check if user is a superuser"""
+        return username == self.SUPERUSER
 
     def register_user(self, username: str, password: str) -> bool:
         """Register a new user"""
@@ -90,7 +95,9 @@ class AuthManager:
             if "chat_messages" not in db:
                 db["chat_messages"] = []
 
+            message_id = len(db["chat_messages"])  # Simple incrementing ID
             db["chat_messages"].append({
+                "id": message_id,
                 "username": username,
                 "message": message,
                 "timestamp": datetime.now().isoformat()
@@ -106,6 +113,20 @@ class AuthManager:
             logger.error(f"Error saving chat message: {str(e)}")
             return False
 
+    def delete_message(self, message_id: int, username: str) -> bool:
+        """Delete a chat message (superuser only)"""
+        try:
+            if not self.is_superuser(username):
+                return False
+
+            db = self._load_db()
+            db["chat_messages"] = [msg for msg in db["chat_messages"] if msg.get("id") != message_id]
+            self._save_db(db)
+            return True
+        except Exception as e:
+            logger.error(f"Error deleting message: {str(e)}")
+            return False
+
     def get_chat_messages(self, limit: int = 50) -> List[Dict]:
         """Get recent chat messages"""
         try:
@@ -115,6 +136,26 @@ class AuthManager:
         except Exception as e:
             logger.error(f"Error getting chat messages: {str(e)}")
             return []
+
+    def get_all_users(self, username: str) -> Optional[List[Dict]]:
+        """Get list of all users (superuser only)"""
+        try:
+            if not self.is_superuser(username):
+                return None
+
+            db = self._load_db()
+            users_list = []
+            for username, data in db["users"].items():
+                users_list.append({
+                    "username": username,
+                    "created_at": data["created_at"],
+                    "last_login": data["last_login"],
+                    "is_superuser": self.is_superuser(username)
+                })
+            return users_list
+        except Exception as e:
+            logger.error(f"Error getting users list: {str(e)}")
+            return None
 
     def save_user_activity(self, username: str, activity_type: str, data: Dict):
         """Save user activity (searches, analyses, etc.)"""
