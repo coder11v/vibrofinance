@@ -1,7 +1,8 @@
 import streamlit as st
-from utils.database import get_db, User
+from utils.database import get_db
 from utils.auth import get_password_hash, authenticate_user, create_access_token
 import time
+from datetime import datetime
 
 def auth_page():
     if "user" not in st.session_state:
@@ -21,10 +22,10 @@ def auth_page():
 
             if submitted:
                 with st.spinner("Logging in..."):
-                    db = next(get_db())
+                    db = get_db()
                     user = authenticate_user(db, email, password)
                     if user:
-                        token = create_access_token({"sub": user.id})
+                        token = create_access_token({"sub": email})
                         st.session_state.user = user
                         st.session_state.token = token
                         st.success("Login successful!")
@@ -47,28 +48,23 @@ def auth_page():
                     st.error("Passwords do not match")
                 else:
                     with st.spinner("Creating account..."):
-                        db = next(get_db())
+                        db = get_db()
                         # Check if user exists
-                        existing_user = db.query(User).filter(
-                            (User.email == email) | (User.username == username)
-                        ).first()
-                        
-                        if existing_user:
-                            st.error("Username or email already exists")
+                        if email in db.users:
+                            st.error("Email already exists")
                         else:
                             # Create new user
-                            new_user = User(
-                                username=username,
-                                email=email,
-                                hashed_password=get_password_hash(password)
-                            )
-                            db.add(new_user)
-                            db.commit()
-                            db.refresh(new_user)
-                            
+                            db.users[email] = {
+                                'username': username,
+                                'email': email,
+                                'hashed_password': get_password_hash(password),
+                                'created_at': datetime.utcnow().isoformat()
+                            }
+                            db.save()
+
                             # Log user in
-                            token = create_access_token({"sub": new_user.id})
-                            st.session_state.user = new_user
+                            token = create_access_token({"sub": email})
+                            st.session_state.user = db.users[email]
                             st.session_state.token = token
                             st.success("Account created successfully!")
                             time.sleep(1)

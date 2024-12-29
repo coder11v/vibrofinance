@@ -1,55 +1,56 @@
-from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
+import json
 import os
 from datetime import datetime
+import logging
 
-# Get database URL from environment
-DATABASE_URL = os.environ.get("DATABASE_URL")
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-# Create database engine
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Initialize database files
+DB_FOLDER = "db"
+USERS_FILE = os.path.join(DB_FOLDER, "users.json")
+CHATS_FILE = os.path.join(DB_FOLDER, "chats.json")
+INSIGHTS_FILE = os.path.join(DB_FOLDER, "insights.json")
 
-Base = declarative_base()
+# Create db folder if it doesn't exist
+if not os.path.exists(DB_FOLDER):
+    os.makedirs(DB_FOLDER)
 
-class User(Base):
-    __tablename__ = "users"
+def load_json(file_path):
+    """Load JSON data from file"""
+    try:
+        if os.path.exists(file_path):
+            with open(file_path, 'r') as f:
+                return json.load(f)
+        return {}
+    except Exception as e:
+        logger.error(f"Error loading JSON from {file_path}: {str(e)}")
+        return {}
 
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True)
-    username = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    chats = relationship("Chat", back_populates="user")
-    insights = relationship("AIInsight", back_populates="user")
+def save_json(file_path, data):
+    """Save JSON data to file"""
+    try:
+        with open(file_path, 'w') as f:
+            json.dump(data, f, indent=2)
+    except Exception as e:
+        logger.error(f"Error saving JSON to {file_path}: {str(e)}")
+        raise
 
-class Chat(Base):
-    __tablename__ = "chats"
+class JSONDatabase:
+    def __init__(self):
+        self.users = load_json(USERS_FILE)
+        self.chats = load_json(CHATS_FILE)
+        self.insights = load_json(INSIGHTS_FILE)
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    message = Column(Text)
-    response = Column(Text)
-    timestamp = Column(DateTime, default=datetime.utcnow)
-    user = relationship("User", back_populates="chats")
+    def save(self):
+        """Save all data to files"""
+        save_json(USERS_FILE, self.users)
+        save_json(CHATS_FILE, self.chats)
+        save_json(INSIGHTS_FILE, self.insights)
 
-class AIInsight(Base):
-    __tablename__ = "ai_insights"
-
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    stock_symbol = Column(String)
-    analysis = Column(Text)
-    timestamp = Column(DateTime, default=datetime.utcnow)
-    user = relationship("User", back_populates="insights")
-
-# Create all tables
-Base.metadata.create_all(bind=engine)
+# Database instance
+db = JSONDatabase()
 
 def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    return db

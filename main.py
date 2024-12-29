@@ -4,9 +4,9 @@ from utils.stock_data import get_stock_data, get_multiple_stocks_data, get_key_m
 from utils.ai_advisor import get_stock_analysis, ask_follow_up_question, suggest_stocks
 from utils.chart_helper import create_stock_chart, create_comparison_chart
 from utils.portfolio_manager import generate_portfolio_recommendation, analyze_portfolio_health
-from utils.goal_planner import FinancialGoal, analyze_goal_feasibility, generate_investment_plan
-from utils.database import get_db, Chat, AIInsight
+from utils.database import get_db
 from pages.auth import check_auth
+from datetime import datetime
 import time
 
 # Page configuration
@@ -60,10 +60,14 @@ st.markdown("</div>", unsafe_allow_html=True)
 # Get current section from URL parameters
 section = st.query_params.get("section", "Market Analysis")
 
-# Initialize chat history from database
+# Initialize chat history from JSON database
 if "messages" not in st.session_state:
-    db = next(get_db())
-    chats = db.query(Chat).filter(Chat.user_id == st.session_state.user.id).order_by(Chat.timestamp.desc()).limit(10).all()
+    db = get_db()
+    user_email = st.session_state.user['email']
+    user_chats = [chat for chat in db.chats.values() 
+                  if chat['user_email'] == user_email]
+    user_chats.sort(key=lambda x: x['timestamp'], reverse=True)
+
     st.session_state.messages = [
         {"role": "assistant", "content": "Hello! I'm ViBro, your AI financial assistant. I can help you with:\n\n" +
          "📊 Portfolio Management\n" +
@@ -72,10 +76,11 @@ if "messages" not in st.session_state:
          "📈 Market Analysis\n\n" +
          "What would you like to know about?"}
     ]
-    for chat in reversed(chats):
+
+    for chat in user_chats[:10]:  # Load last 10 chats
         st.session_state.messages.extend([
-            {"role": "user", "content": chat.message},
-            {"role": "assistant", "content": chat.response}
+            {"role": "user", "content": chat['message']},
+            {"role": "assistant", "content": chat['response']}
         ])
 
 # Main content
@@ -317,14 +322,15 @@ try:
                                  "What would you like to explore?"
 
                     # Save chat to database
-                    db = next(get_db())
-                    chat = Chat(
-                        user_id=st.session_state.user.id,
-                        message=prompt,
-                        response=response
-                    )
-                    db.add(chat)
-                    db.commit()
+                    db = get_db()
+                    chat_id = str(len(db.chats) + 1)
+                    db.chats[chat_id] = {
+                        'user_email': st.session_state.user['email'],
+                        'message': prompt,
+                        'response': response,
+                        'timestamp': datetime.utcnow().isoformat()
+                    }
+                    db.save()
 
                     # Simulate typing
                     for chunk in response.split():
