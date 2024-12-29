@@ -20,7 +20,7 @@ class AuthManager:
             os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
             if not os.path.exists(self.db_path):
                 with open(self.db_path, 'w') as f:
-                    json.dump({"users": {}}, f)
+                    json.dump({"users": {}, "chat_messages": []}, f)
         except Exception as e:
             logger.error(f"Error ensuring database exists: {str(e)}")
             raise
@@ -83,6 +83,39 @@ class AuthManager:
             logger.error(f"Error verifying user: {str(e)}")
             return False
 
+    def save_chat_message(self, username: str, message: str) -> bool:
+        """Save a chat message"""
+        try:
+            db = self._load_db()
+            if "chat_messages" not in db:
+                db["chat_messages"] = []
+
+            db["chat_messages"].append({
+                "username": username,
+                "message": message,
+                "timestamp": datetime.now().isoformat()
+            })
+
+            # Keep only last 100 messages
+            if len(db["chat_messages"]) > 100:
+                db["chat_messages"] = db["chat_messages"][-100:]
+
+            self._save_db(db)
+            return True
+        except Exception as e:
+            logger.error(f"Error saving chat message: {str(e)}")
+            return False
+
+    def get_chat_messages(self, limit: int = 50) -> List[Dict]:
+        """Get recent chat messages"""
+        try:
+            db = self._load_db()
+            messages = db.get("chat_messages", [])
+            return messages[-limit:] if messages else []
+        except Exception as e:
+            logger.error(f"Error getting chat messages: {str(e)}")
+            return []
+
     def save_user_activity(self, username: str, activity_type: str, data: Dict):
         """Save user activity (searches, analyses, etc.)"""
         try:
@@ -98,7 +131,7 @@ class AuthManager:
                     db["users"][username]["portfolio"] = data
                 elif activity_type == "goals":
                     db["users"][username]["goals"] = data
-                
+
                 self._save_db(db)
                 return True
             return False

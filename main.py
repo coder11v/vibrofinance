@@ -6,8 +6,8 @@ from utils.chart_helper import create_stock_chart, create_comparison_chart
 from utils.portfolio_manager import generate_portfolio_recommendation, analyze_portfolio_health
 from utils.goal_planner import FinancialGoal, analyze_goal_feasibility, generate_investment_plan
 from utils.auth import AuthManager
-from pages.auth import init_auth, login_page, logout
 from utils.ml_predictor import StockPredictor # Added import
+from datetime import datetime # Added import
 
 # Page configuration
 st.set_page_config(
@@ -54,9 +54,9 @@ else:
             logout()
 
     # Navigation
-    nav_options = ["Market Analysis", "Portfolio Management", "Goal Planning"]
+    nav_options = ["Market Analysis", "Portfolio Management", "Goal Planning", "Investor Chat"]
     st.markdown("<div class='nav-container'>", unsafe_allow_html=True)
-    cols = st.columns(3)
+    cols = st.columns(4)  # Updated to 4 columns
     for i, option in enumerate(nav_options):
         with cols[i]:
             if st.button(
@@ -514,6 +514,64 @@ else:
 
                     except Exception as e:
                         st.error(f"Error creating goal plan: {str(e)}")
+
+        elif section == "Investor Chat":
+            st.title("💬 Investor Chat")
+
+            # Initialize chat container
+            if "chat_messages" not in st.session_state:
+                st.session_state.chat_messages = []
+
+            # Message input
+            chat_input = st.text_input("Type your message:", key="chat_input")
+            if st.button("Send", type="primary"):
+                if chat_input.strip():
+                    # Save message to database
+                    if auth_manager.save_chat_message(st.session_state.username, chat_input):
+                        st.success("Message sent!")
+                        st.session_state.chat_messages = auth_manager.get_chat_messages()
+                        st.rerun()
+
+            # Display chat messages
+            with st.container():
+                st.markdown("### Recent Messages")
+                messages = auth_manager.get_chat_messages()
+
+                for msg in reversed(messages):
+                    timestamp = datetime.fromisoformat(msg['timestamp'])
+                    formatted_time = timestamp.strftime("%I:%M %p")
+
+                    # Style messages differently for current user
+                    if msg['username'] == st.session_state.username:
+                        st.markdown(f"""
+                            <div style='text-align: right; margin: 10px 0;'>
+                                <div style='display: inline-block; background-color: #00AB41; color: white; 
+                                      padding: 10px; border-radius: 15px; max-width: 70%;'>
+                                    <p style='margin: 0;'>{msg['message']}</p>
+                                    <small style='opacity: 0.7;'>{formatted_time}</small>
+                                </div>
+                            </div>
+                        """, unsafe_allow_html=True)
+                    else:
+                        st.markdown(f"""
+                            <div style='text-align: left; margin: 10px 0;'>
+                                <div style='display: inline-block; background-color: #262730; 
+                                      padding: 10px; border-radius: 15px; max-width: 70%;'>
+                                    <small style='color: #00AB41;'>{msg['username']}</small>
+                                    <p style='margin: 0;'>{msg['message']}</p>
+                                    <small style='opacity: 0.7;'>{formatted_time}</small>
+                                </div>
+                            </div>
+                        """, unsafe_allow_html=True)
+
+                # Auto-scroll to bottom (placeholder for future enhancement)
+                st.markdown("""
+                    <div id='chat-bottom'></div>
+                    <script>
+                        document.getElementById('chat-bottom').scrollIntoView();
+                    </script>
+                """, unsafe_allow_html=True)
+
 
         # Add Technical Indicators Explanation section at the bottom
         st.markdown("---")
