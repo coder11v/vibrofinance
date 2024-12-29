@@ -7,6 +7,7 @@ from utils.portfolio_manager import generate_portfolio_recommendation, analyze_p
 from utils.goal_planner import FinancialGoal, analyze_goal_feasibility, generate_investment_plan
 from utils.auth import AuthManager
 from pages.auth import init_auth, login_page, logout
+from utils.ml_predictor import StockPredictor # Added import
 
 # Page configuration
 st.set_page_config(
@@ -136,6 +137,23 @@ else:
                         # Calculate technical indicators
                         df = calculate_technical_indicators(hist_data)
 
+                        # Generate price predictions
+                        predictor = StockPredictor()
+                        with st.spinner('Generating price predictions...'):
+                            try:
+                                predictions, confidence = predictor.analyze_stock(hist_data)
+
+                                # Show prediction confidence
+                                st.info(f"""
+                                **ML Prediction Confidence:**
+                                - Model Accuracy: {confidence['test_score']:.2%}
+                                - Prediction Quality: {confidence['prediction_quality']}
+                                - Predicting next {len(predictions)} trading days
+                                """)
+                            except Exception as e:
+                                st.warning(f"Could not generate predictions: {str(e)}")
+                                predictions = None
+
                         # Two-column layout
                         col_data, col_ai = st.columns([1, 1])
 
@@ -147,12 +165,27 @@ else:
                             current_price = stock_info.get('currentPrice', 0)
                             price_change = stock_info.get('regularMarketChangePercent', 0)
                             price_color = "stock-up" if price_change >= 0 else "stock-down"
-                            st.markdown(f"""
-                                <div class='price-display'>
-                                    <h2>${current_price:.2f}</h2>
-                                    <p class='{price_color}'>{price_change:+.2f}%</p>
-                                </div>
-                            """, unsafe_allow_html=True)
+
+                            # Show current price and predicted price if available
+                            if predictions is not None:
+                                predicted_price = predictions['Predicted_Close'].iloc[-1]
+                                predicted_change = ((predicted_price - current_price) / current_price) * 100
+                                predicted_color = "stock-up" if predicted_change >= 0 else "stock-down"
+
+                                st.markdown(f"""
+                                    <div class='price-display'>
+                                        <h2>${current_price:.2f}</h2>
+                                        <p class='{price_color}'>{price_change:+.2f}%</p>
+                                        <p>Predicted (30d): <span class='{predicted_color}'>${predicted_price:.2f} ({predicted_change:+.2f}%)</span></p>
+                                    </div>
+                                """, unsafe_allow_html=True)
+                            else:
+                                st.markdown(f"""
+                                    <div class='price-display'>
+                                        <h2>${current_price:.2f}</h2>
+                                        <p class='{price_color}'>{price_change:+.2f}%</p>
+                                    </div>
+                                """, unsafe_allow_html=True)
 
                             # Key metrics
                             st.markdown("### Key Metrics")

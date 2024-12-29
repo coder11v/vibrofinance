@@ -6,10 +6,10 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def create_stock_chart(df):
-    """Create an interactive stock chart with technical indicators"""
+def create_stock_chart(df, predictions=None):
+    """Create an interactive stock chart with technical indicators and predictions"""
     try:
-        logger.info("Creating stock chart with technical indicators")
+        logger.info("Creating stock chart with technical indicators and predictions")
         fig = make_subplots(rows=2, cols=1, 
                            shared_xaxes=True,
                            vertical_spacing=0.03,
@@ -49,6 +49,19 @@ def create_stock_chart(df):
             row=1, col=1
         )
 
+        # Add predictions if available
+        if predictions is not None:
+            fig.add_trace(
+                go.Scatter(
+                    x=predictions.index,
+                    y=predictions['Predicted_Close'],
+                    name='Prediction',
+                    line=dict(color='green', width=2, dash='dash'),
+                    hovertemplate='Date: %{x}<br>Predicted Price: $%{y:.2f}<extra></extra>'
+                ),
+                row=1, col=1
+            )
+
         # Add RSI
         fig.add_trace(
             go.Scatter(
@@ -66,7 +79,7 @@ def create_stock_chart(df):
 
         # Update layout
         fig.update_layout(
-            title_text="Stock Price & Technical Indicators",
+            title_text="Stock Price & Technical Indicators with ML Predictions",
             xaxis_rangeslider_visible=False,
             height=800,
             template="plotly_white",
@@ -82,7 +95,7 @@ def create_stock_chart(df):
         fig.update_yaxes(title_text="Price", row=1, col=1)
         fig.update_yaxes(title_text="RSI", row=2, col=1)
 
-        logger.info("Successfully created stock chart")
+        logger.info("Successfully created stock chart with predictions")
         return fig
     except Exception as e:
         logger.error(f"Error creating stock chart: {str(e)}")
