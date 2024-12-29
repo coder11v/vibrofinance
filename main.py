@@ -5,6 +5,8 @@ from utils.ai_advisor import get_stock_analysis, ask_follow_up_question, suggest
 from utils.chart_helper import create_stock_chart, create_comparison_chart
 from utils.portfolio_manager import generate_portfolio_recommendation, analyze_portfolio_health
 from utils.goal_planner import FinancialGoal, analyze_goal_feasibility, generate_investment_plan
+from utils.database import get_db, Chat, AIInsight
+from pages.auth import check_auth
 import time
 
 # Page configuration
@@ -17,6 +19,10 @@ st.set_page_config(
         'About': "ViBro Finance - Your AI-Powered Financial Assistant"
     }
 )
+
+# Check authentication
+if not check_auth():
+    st.stop()
 
 # Set dark theme
 st.markdown("""
@@ -54,8 +60,10 @@ st.markdown("</div>", unsafe_allow_html=True)
 # Get current section from URL parameters
 section = st.query_params.get("section", "Market Analysis")
 
-# Initialize chat history
+# Initialize chat history from database
 if "messages" not in st.session_state:
+    db = next(get_db())
+    chats = db.query(Chat).filter(Chat.user_id == st.session_state.user.id).order_by(Chat.timestamp.desc()).limit(10).all()
     st.session_state.messages = [
         {"role": "assistant", "content": "Hello! I'm ViBro, your AI financial assistant. I can help you with:\n\n" +
          "📊 Portfolio Management\n" +
@@ -64,42 +72,11 @@ if "messages" not in st.session_state:
          "📈 Market Analysis\n\n" +
          "What would you like to know about?"}
     ]
-
-if section == "Market Analysis":
-    analysis_type = st.radio(
-        "Select Analysis Type",
-        ["Single Stock", "Compare Stocks"],
-        horizontal=True
-    )
-
-    if analysis_type == "Single Stock":
-        symbol = st.text_input("Enter Stock Symbol", value="ViBro").upper()
-        symbols = [symbol]
-    else:
-        col1, col2, col3, col4 = st.columns(4)
-        symbols = []
-        with col1:
-            symbol1 = st.text_input("Stock Symbol 1")
-            if symbol1: symbols.append(symbol1.upper())
-        with col2:
-            symbol2 = st.text_input("Stock Symbol 2")
-            if symbol2: symbols.append(symbol2.upper())
-        with col3:
-            symbol3 = st.text_input("Stock Symbol 3")
-            if symbol3: symbols.append(symbol3.upper())
-        with col4:
-            symbol4 = st.text_input("Stock Symbol 4")
-            if symbol4: symbols.append(symbol4.upper())
-
-    time_period = st.select_slider(
-        "Select Time Period",
-        ["1mo", "3mo", "6mo", "1y", "2y", "5y"],
-        value="1y"
-    )
-
-    if st.button("Analyze", type="primary"):
-        st.session_state.analyze = True
-        st.session_state.symbols = symbols
+    for chat in reversed(chats):
+        st.session_state.messages.extend([
+            {"role": "user", "content": chat.message},
+            {"role": "assistant", "content": chat.response}
+        ])
 
 # Main content
 try:
@@ -280,28 +257,74 @@ try:
                 message_placeholder = st.empty()
                 full_response = ""
 
-                # Simulate stream of response with a typing indicator
+                # Process the user's message and generate a response
                 with st.spinner("ViBro is thinking..."):
-                    # Process the user's message and generate a response
-                    if "portfolio" in prompt.lower() or "stocks" in prompt.lower():
+                    if "portfolio" in prompt.lower():
                         risk_tolerance = "moderate"
                         investment_amount = 10000
                         try:
+                            # Generate portfolio recommendation
+                            portfolio = generate_portfolio_recommendation(risk_tolerance, investment_amount)
                             suggestions = suggest_stocks(risk_tolerance, investment_amount)
-                            response = "Based on your interest in portfolio management, here are some stock suggestions:\n\n"
+
+                            response = "Here's a personalized portfolio recommendation:\n\n"
+                            response += "**Recommended Asset Allocation:**\n"
+                            for asset, percentage in portfolio["allocation"].items():
+                                response += f"- {asset.title()}: {percentage*100:.0f}% (${investment_amount * percentage:,.2f})\n"
+
+                            response += "\n**Recommended Stocks:**\n"
                             for suggestion in suggestions:
                                 response += f"📈 **{suggestion['ticker']} - {suggestion['company']}**\n{suggestion['reason']}\n\n"
+
                         except Exception as e:
                             response = f"Error generating portfolio recommendations: {str(e)}"
+
                     elif "goal" in prompt.lower() or "planning" in prompt.lower():
-                        response = "Let's discuss your financial goals. To help you better, I'll need to know:\n\n" + \
-                                 "1. What type of goal are you planning for? (e.g., retirement, house, education)\n" + \
-                                 "2. What's your target amount?\n" + \
-                                 "3. When do you want to achieve this goal?\n\n" + \
-                                 "Share these details, and I'll create a personalized plan for you."
+                        response = "Let's create a personalized financial goal plan. Please provide:\n\n" + \
+                                 "1. Goal type (e.g., retirement, house, education)\n" + \
+                                 "2. Target amount\n" + \
+                                 "3. Target date\n" + \
+                                 "4. Current savings (if any)\n\n" + \
+                                 "Once you provide these details, I'll analyze the feasibility and create an investment strategy."
+
+                    elif "technical" in prompt.lower() or "indicators" in prompt.lower():
+                        response = """
+                        Here's a guide to understanding technical indicators:
+
+                        **Candlestick Chart:**
+                        - Green candles: Price increase
+                        - Red candles: Price decrease
+                        - Shows Open, High, Low, Close prices
+
+                        **Moving Averages:**
+                        - 20 SMA: Short-term trend
+                        - 50 SMA: Medium-term trend
+                        - Crossovers signal potential trend changes
+
+                        **RSI (Relative Strength Index):**
+                        - Above 70: Potentially overbought
+                        - Below 30: Potentially oversold
+                        - Helps identify momentum
+
+                        Would you like me to explain any specific indicator in more detail?
+                        """
+
                     else:
-                        response = "I can help you with portfolio management, goal planning, and investment recommendations. " + \
-                                 "What specific aspect would you like to explore?"
+                        response = "I can help you with:\n\n" + \
+                                 "1. Portfolio Management - Create and analyze investment portfolios\n" + \
+                                 "2. Goal Planning - Set and track financial goals\n" + \
+                                 "3. Technical Analysis - Understand market indicators\n\n" + \
+                                 "What would you like to explore?"
+
+                    # Save chat to database
+                    db = next(get_db())
+                    chat = Chat(
+                        user_id=st.session_state.user.id,
+                        message=prompt,
+                        response=response
+                    )
+                    db.add(chat)
+                    db.commit()
 
                     # Simulate typing
                     for chunk in response.split():
@@ -313,7 +336,55 @@ try:
             # Add assistant response to chat history
             st.session_state.messages.append({"role": "assistant", "content": full_response})
 
-        # Add disclaimer at the bottom of the page
+        # Add disclaimer and footer
+        st.markdown("---")
+        with st.expander("📚 Understanding Technical Indicators"):
+            st.markdown("""
+            ### Stock Chart Components - A ViBro Guide
+
+            #### OHLC (Candlestick Chart)
+            - **O**pen: The stock's price at market open
+            - **H**igh: The highest price during the trading day
+            - **L**ow: The lowest price during the trading day
+            - **C**lose: The final price when the market closes
+            - 🎯 *Green candles* indicate price increase, *red candles* indicate price decrease
+
+            #### Moving Averages
+            - **20 SMA** (Simple Moving Average): Average price over the last 20 days
+            - **50 SMA**: Average price over the last 50 days
+            - 🎯 These help identify trends and potential support/resistance levels
+
+            #### RSI (Relative Strength Index)
+            - A momentum indicator that measures the speed and magnitude of recent price changes
+            - Scale: 0 to 100
+            - Above 70: Potentially overbought
+            - Below 30: Potentially oversold
+            - 🎯 Helps identify potential reversal points
+
+            ### Key Metrics Explained
+
+            #### Market Fundamentals
+            - **Market Cap**: Total value of all shares (Price × Outstanding Shares)
+            - **P/E Ratio**: Price per share divided by earnings per share
+            - **EPS**: Earnings Per Share - Company's profit divided by outstanding shares
+
+            #### Price Indicators
+            - **52 Week High**: Highest stock price in the past year
+            - **52 Week Low**: Lowest stock price in the past year
+            - **Volume**: Number of shares traded
+
+            #### Income Metrics
+            - **Dividend Yield**: Annual dividend payments relative to stock price
+            - 🎯 Higher yield might indicate better income potential, but verify company's stability
+
+            ### Using This Information
+
+            - Compare current price to 52-week range for context
+            - Use P/E ratio to assess if stock is potentially over/undervalued
+            - Watch volume for confirmation of price movements
+            - Monitor RSI for potential entry/exit points
+            """)
+
         st.markdown("---")
         st.markdown("""
         ### Disclaimer
@@ -326,55 +397,6 @@ try:
 
         """)
 
-
-    # Add Technical Indicators Explanation section at the bottom
-    st.markdown("---")
-    with st.expander("📚 Understanding Technical Indicators", expanded=False):
-        st.markdown("""
-        ### Stock Chart Components - A ViBro Guide
-
-        #### OHLC (Candlestick Chart)
-        - **O**pen: The stock's price at market open
-        - **H**igh: The highest price during the trading day
-        - **L**ow: The lowest price during the trading day
-        - **C**lose: The final price when the market closes
-        - 🎯 *Green candles* indicate price increase, *red candles* indicate price decrease
-
-        #### Moving Averages
-        - **20 SMA** (Simple Moving Average): Average price over the last 20 days
-        - **50 SMA**: Average price over the last 50 days
-        - 🎯 These help identify trends and potential support/resistance levels
-
-        #### RSI (Relative Strength Index)
-        - A momentum indicator that measures the speed and magnitude of recent price changes
-        - Scale: 0 to 100
-        - Above 70: Potentially overbought
-        - Below 30: Potentially oversold
-        - 🎯 Helps identify potential reversal points
-
-        ### Key Metrics Explained
-
-        #### Market Fundamentals
-        - **Market Cap**: Total value of all shares (Price × Outstanding Shares)
-        - **P/E Ratio**: Price per share divided by earnings per share
-        - **EPS**: Earnings Per Share - Company's profit divided by outstanding shares
-
-        #### Price Indicators
-        - **52 Week High**: Highest stock price in the past year
-        - **52 Week Low**: Lowest stock price in the past year
-        - **Volume**: Number of shares traded
-
-        #### Income Metrics
-        - **Dividend Yield**: Annual dividend payments relative to stock price
-        - 🎯 Higher yield might indicate better income potential, but verify company's stability
-
-        ### Using This Information
-
-        - Compare current price to 52-week range for context
-        - Use P/E ratio to assess if stock is potentially over/undervalued
-        - Watch volume for confirmation of price movements
-        - Monitor RSI for potential entry/exit points
-        """)
 
 except Exception as e:
     st.error(f"An error occurred: {str(e)}")
