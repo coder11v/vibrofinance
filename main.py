@@ -93,7 +93,7 @@ else:
                     if not notification['read']:
                         st.markdown(f"""
                             <div style='background-color: rgba(0, 171, 65, 0.1); padding: 10px; border-radius: 5px; margin: 5px 0;'>
-                                <small style='color: #00AB41'>From {notification['from']} at {notification['timestamp']}</small><br>
+                                <small style='color: #00AB41'>From ViBro finance:</small><br>
                                 {notification['message']}
                             </div>
                         """, unsafe_allow_html=True)
@@ -591,16 +591,33 @@ else:
 
                     # Add notification controls
                     st.markdown("### Send Notification")
-                    notify_user = st.selectbox(
-                        "Select User",
-                        [user["username"] for user in users if user["username"] != st.session_state.username]
+
+                    # Option to select between single user or all users
+                    notification_type = st.radio(
+                        "Notification Type",
+                        ["Single User", "All Users"],
+                        horizontal=True
                     )
+
+                    if notification_type == "Single User":
+                        notify_user = st.selectbox(
+                            "Select User",
+                            [user["username"] for user in users if user["username"] != st.session_state.username]
+                        )
+
                     notification_message = st.text_area("Notification Message")
+
                     if st.button("Send Notification", type="primary"):
-                        if auth_manager.send_notification(st.session_state.username, notify_user, notification_message):
-                            st.success(f"Notification sent to {notify_user}")
-                        else:
-                            st.error("Failed to send notification")
+                        if notification_type == "Single User":
+                            if auth_manager.send_notification(st.session_state.username, notify_user, notification_message):
+                                st.success(f"Notification sent to {notify_user}")
+                            else:
+                                st.error("Failed to send notification")
+                        else:  # All Users
+                            if auth_manager.send_notification_to_all(st.session_state.username, notification_message):
+                                st.success("Notification sent to all users")
+                            else:
+                                st.error("Failed to send notification to all users")
 
             # Add notification display for all users
             notifications = auth_manager.get_notifications(st.session_state.username)

@@ -252,3 +252,35 @@ class AuthManager:
         except Exception as e:
             logger.error(f"Error marking notification as read: {str(e)}")
             return False
+
+    def send_notification_to_all(self, from_username: str, message: str) -> bool:
+        """Send a notification to all users (superuser only)"""
+        try:
+            if not self.is_superuser(from_username):
+                return False
+
+            db = self._load_db()
+            users = list(db["users"].keys())
+            success = True
+
+            for username in users:
+                if username != from_username:  # Don't send to self
+                    if "notifications" not in db:
+                        db["notifications"] = {}
+                    if username not in db["notifications"]:
+                        db["notifications"][username] = []
+
+                    notification = {
+                        "id": len(db["notifications"][username]),
+                        "from": from_username,
+                        "message": message,
+                        "timestamp": datetime.now().isoformat(),
+                        "read": False
+                    }
+                    db["notifications"][username].append(notification)
+
+            self._save_db(db)
+            return success
+        except Exception as e:
+            logger.error(f"Error sending notification to all users: {str(e)}")
+            return False
