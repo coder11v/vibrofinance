@@ -28,15 +28,25 @@
                 {
                     "id": "module-2",
                     "title": "Investment Strategies",
-                    "content": "# Investment Strategies\n\nLearn about different approaches to investing and how to choose the right strategy for your goals.\n\n## Common Strategies\n1. Value Investing\n2. Growth Investing\n3. Dividend Investing\n4. Index Investing\n\n## Risk Management\n- Diversification\n- Asset Allocation\n- Position Sizing",
+                    "content": "# Investment Strategies\n\nDiscover various approaches to investing and how to develop your personal investment strategy.\n\n## Core Strategies\n\n### Buy and Hold\nA long-term investment strategy where investors purchase stocks or other securities and hold them for extended periods, typically years or decades, regardless of market fluctuations. This strategy:\n- Reduces trading costs and tax implications\n- Takes advantage of long-term market growth\n- Minimizes emotional trading decisions\n- Examples: Buying blue-chip stocks like Apple or Microsoft and holding for 10+ years\n\n### Dollar-Cost Averaging (DCA)\nA systematic investment approach where you invest a fixed amount of money at regular intervals, regardless of market conditions. Benefits include:\n- Reduces impact of market volatility\n- Eliminates the need to time the market\n- Creates disciplined investing habits\nExample: Investing $500 monthly in an S&P 500 index fund, whether markets are up or down\n\n### Value Investing\nA strategy focused on identifying undervalued companies by analyzing:\n- Price-to-Earnings (P/E) ratio\n- Book value vs. market value\n- Dividend yield and history\n- Company fundamentals and competitive advantages\nFamous practitioners: Warren Buffett, Benjamin Graham\n\n### Growth Investing\nFocuses on companies with strong growth potential, characterized by:\n- High revenue and earnings growth rates\n- Expanding market share\n- Innovation and market leadership\n- Strong competitive advantages\nExample: Early investors in Tesla or Amazon focusing on future potential\n\n## Risk Management\n1. Understanding Risk Tolerance\n   - Assess your financial goals\n   - Consider your time horizon\n   - Evaluate emotional comfort with volatility\n\n2. Portfolio Rebalancing\n   - Regular portfolio review (quarterly/annually)\n   - Maintaining target asset allocation\n   - Adjusting for market changes\n\n3. Stop-Loss Orders\n   - Setting price triggers for automatic selling\n   - Protecting against significant losses\n   - Example: Setting a 15% stop-loss on individual positions\n\n4. Position Sizing\n   - Determining appropriate investment amounts\n   - Diversification across sectors and assets\n   - Risk-based position sizing methods",
                     "quiz": [
                         {
-                            "question": "What is diversification?",
+                            "question": "What is dollar-cost averaging?",
                             "options": [
-                                "Buying only tech stocks",
-                                "Investing in different asset classes to reduce risk",
-                                "Selling all investments at once",
-                                "Borrowing money to invest"
+                                "Buying stocks at their lowest price",
+                                "Investing a fixed amount at regular intervals",
+                                "Selling stocks when they reach a certain price",
+                                "Trading stocks daily for profit"
+                            ],
+                            "correct": 1
+                        },
+                        {
+                            "question": "Which of these is NOT a key benefit of the Buy and Hold strategy?",
+                            "options": [
+                                "Lower trading costs",
+                                "Quick profit realization",
+                                "Reduced tax implications",
+                                "Minimized emotional trading"
                             ],
                             "correct": 1
                         }

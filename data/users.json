@@ -3,7 +3,7 @@
         "theyounginvestor": {
             "password": "2e44ff892b0a37a316597f8214e16929fa0406388a88abe9842eba6a0dc5755d",
             "created_at": "2024-12-29T20:21:18.101285",
-            "last_login": "2024-12-30T05:00:37.823035",
+            "last_login": "2024-12-30T05:25:19.254326",
             "search_history": [
                 {
                     "timestamp": "2024-12-29T20:21:48.516060",
@@ -78,6 +78,11 @@
                 {
                     "timestamp": "2024-12-30T02:15:55.506936",
                     "symbol": "QQQ",
+                    "period": "5y"
+                },
+                {
+                    "timestamp": "2024-12-30T05:25:45.644187",
+                    "symbol": "PRI",
                     "period": "5y"
                 }
             ],
