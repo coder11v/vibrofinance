@@ -10,6 +10,8 @@ from utils.ml_predictor import StockPredictor # Added import
 from datetime import datetime # Added import
 from pages.auth import init_auth, login_page, logout  # Re-added import
 import logging
+from utils.education_manager import EducationManager  # Add this import
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -109,9 +111,9 @@ else:
             logout()
 
     # Navigation
-    nav_options = ["Market Analysis", "Portfolio Management", "Goal Planning", "Investor Chat"]
+    nav_options = ["Market Analysis", "Portfolio Management", "Goal Planning", "Education", "Investor Chat"]
     st.markdown("<div class='nav-container'>", unsafe_allow_html=True)
-    cols = st.columns(4)  # Updated to 4 columns
+    cols = st.columns(5)  # Updated to 5 columns
     for i, option in enumerate(nav_options):
         with cols[i]:
             if st.button(
@@ -569,6 +571,92 @@ else:
 
                     except Exception as e:
                         st.error(f"Error creating goal plan: {str(e)}")
+
+        elif section == "Education":
+            st.title("📚 Financial Education")
+
+            # Initialize education manager
+            education_manager = EducationManager()
+
+            # Get all courses
+            courses = education_manager.get_all_courses()
+
+            # Get user's progress
+            user_progress = education_manager.get_user_progress(st.session_state.username)
+
+            # Display available courses
+            st.markdown("### Available Courses")
+
+            for course in courses:
+                with st.expander(f"📘 {course['title']} - {course['difficulty']}", expanded=True):
+                    col1, col2 = st.columns([3, 1])
+
+                    with col1:
+                        st.markdown(f"**Duration:** {course['duration']}")
+                        st.markdown(course['description'])
+
+                        # Calculate progress
+                        modules_completed = sum(
+                            1 for module in course['modules']
+                            if education_manager.get_module_completion(
+                                st.session_state.username,
+                                course['id'],
+                                module['id']
+                            )
+                        )
+                        progress = (modules_completed / len(course['modules'])) * 100
+
+                        st.progress(progress)
+                        st.markdown(f"**Progress:** {progress:.0f}%")
+
+                    with col2:
+                        if st.button("Start Course", key=f"start_{course['id']}"):
+                            st.session_state.current_course = course['id']
+                            st.rerun()
+
+            # Display course content if a course is selected
+            if hasattr(st.session_state, 'current_course'):
+                current_course = education_manager.get_course(st.session_state.current_course)
+
+                if current_course:
+                    st.markdown(f"## {current_course['title']}")
+
+                    for i, module in enumerate(current_course['modules'], 1):
+                        module_completed = education_manager.get_module_completion(
+                            st.session_state.username,
+                            current_course['id'],
+                            module['id']
+                        )
+
+                        with st.expander(
+                            f"Module {i}: {module['title']} {'✅' if module_completed else ''}",
+                            expanded=not module_completed
+                        ):
+                            st.markdown(module['content'])
+
+                            # Display quiz
+                            if 'quiz' in module:
+                                st.markdown("### Quick Quiz")
+                                for j, question in enumerate(module['quiz'], 1):
+                                    st.markdown(f"**Q{j}: {question['question']}**")
+                                    answer = st.radio(
+                                        "Select your answer:",
+                                        question['options'],
+                                        key=f"quiz_{module['id']}_{j}"
+                                    )
+
+                                    if st.button("Check Answer", key=f"check_{module['id']}_{j}"):
+                                        if question['options'].index(answer) == question['correct']:
+                                            st.success("Correct!")
+                                            education_manager.update_user_progress(
+                                                st.session_state.username,
+                                                current_course['id'],
+                                                module['id']
+                                            )
+                                            st.rerun()
+                                        else:
+                                            st.error("Try again!")
+
 
         elif section == "Investor Chat":
             st.title("💬 Investor Chat")
