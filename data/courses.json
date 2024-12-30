@@ -1,64 +1,42 @@
 {
     "courses": [
         {
-            "id": "vib-investing-101",
-            "title": "VIB Investing 101",
-            "description": "Master the fundamentals of investing with VIB's comprehensive beginner course. Learn market basics, risk management, and smart investment strategies.",
+            "id": "beginner-fundamentals",
+            "title": "Financial Market Fundamentals",
+            "description": "Master the essentials of financial markets with our comprehensive beginner course. Perfect for those starting their investment journey.",
             "difficulty": "Beginner",
-            "duration": "4 hours",
-            "url": "invest.veerbajaj.com",
+            "duration": "10 hours",
             "modules": [
                 {
                     "id": "module-1",
                     "title": "Understanding Stock Markets",
-                    "content": "# Introduction to Stock Markets\n\nThe stock market is a vital component of the global economy where shares of publicly traded companies are bought and sold. Here's what you need to know:\n\n## Key Concepts\n- Stocks represent ownership in a company\n- Markets operate on supply and demand\n- Prices reflect company value and market sentiment\n\n## Why Invest in Stocks?\n1. Potential for long-term growth\n2. Dividend income\n3. Portfolio diversification\n4. Hedge against inflation",
+                    "content": "# Understanding Stock Markets\n\nThe stock market is the cornerstone of modern investing and wealth creation. Let's dive deep into its fundamentals.\n\n## What is a Stock Market?\nA stock market is a regulated marketplace where shares of publicly traded companies are bought and sold. It serves as:\n- A primary market for companies to raise capital through IPOs\n- A secondary market for investors to trade existing shares\n- An economic indicator reflecting business health and investor sentiment\n\n## Key Market Participants\n1. Investors (Retail & Institutional)\n   - Individual investors trading personal accounts\n   - Pension funds managing retirement savings\n   - Mutual funds pooling investor money\n   - Hedge funds pursuing specialized strategies\n\n2. Market Makers\n   - Provide liquidity by always being ready to buy or sell\n   - Help maintain orderly markets\n   - Profit from the bid-ask spread\n\n3. Regulators\n   - SEC (Securities and Exchange Commission)\n   - FINRA (Financial Industry Regulatory Authority)\n   - Stock Exchanges (NYSE, NASDAQ)\n\n## Market Mechanics\n### Trading Hours\n- Regular Market: 9:30 AM - 4:00 PM EST\n- Pre-Market: 4:00 AM - 9:30 AM EST\n- After-Hours: 4:00 PM - 8:00 PM EST\n\n### Order Types\n1. Market Orders\n   - Execute immediately at best available price\n   - Prioritize speed over price\n\n2. Limit Orders\n   - Set maximum buy price or minimum sell price\n   - May not execute immediately\n   - Provide price control\n\n3. Stop Orders\n   - Trigger at specified price\n   - Become market orders when triggered\n   - Used for loss prevention\n\n## Market Psychology\n- Bull Markets: Extended periods of rising prices (optimism)\n- Bear Markets: Extended periods of falling prices (pessimism)\n- Market Sentiment: Collective attitude of investors\n\n## Starting Your Investment Journey\n1. Choose a Broker\n   - Consider fees, research tools, and customer service\n   - Popular options: Fidelity, Charles Schwab, TD Ameritrade\n\n2. Understand Market Data\n   - Price: Current trading value\n   - Volume: Number of shares traded\n   - Market Cap: Total company value\n   - P/E Ratio: Price relative to earnings",
                     "quiz": [
                         {
-                            "question": "What does owning a stock represent?",
+                            "question": "What does market capitalization represent?",
                             "options": [
-                                "A loan to a company",
-                                "Ownership in a company",
-                                "A promise to buy products",
-                                "A job guarantee"
+                                "The total number of shares a company has issued",
+                                "The total value of a company's outstanding shares",
+                                "The daily trading volume of a stock",
+                                "The company's annual revenue"
                             ],
-                            "correct": 1
-                        }
-                    ]
-                },
-                {
-                    "id": "module-2",
-                    "title": "Investment Strategies",
-                    "content": "# Investment Strategies\n\nLearn about different approaches to investing and how to choose the right strategy for your goals.\n\n## Common Strategies\n1. Value Investing\n2. Growth Investing\n3. Dividend Investing\n4. Index Investing\n\n## Risk Management\n- Diversification\n- Asset Allocation\n- Position Sizing",
-                    "quiz": [
+                            "correct": 1,
+                            "explanation": "Market capitalization, often called 'market cap', is calculated by multiplying a company's current stock price by its total number of outstanding shares. For example, if a company has 1 million shares outstanding and trades at $50 per share, its market cap would be $50 million. This represents the total market value of all the company's shares and is used to categorize companies into different sizes:\n\n- Large-cap: Usually above $10 billion\n- Mid-cap: Between $2 billion and $10 billion\n- Small-cap: Below $2 billion\n\nMarket cap is important because it:\n1. Indicates company size and stability\n2. Helps in portfolio diversification\n3. Reflects growth potential and risk level\n4. Used in index inclusion criteria"
+                        },
                         {
-                            "question": "What is diversification?",
+                            "question": "What is the primary function of market makers?",
                             "options": [
-                                "Buying only tech stocks",
-                                "Investing in different asset classes to reduce risk",
-                                "Selling all investments at once",
-                                "Borrowing money to invest"
+                                "To provide investment advice",
+                                "To maintain market liquidity",
+                                "To regulate stock exchanges",
+                                "To manage mutual funds"
                             ],
-                            "correct": 1
-                        }
-                    ]
-                },
-                {
-                    "id": "module-3",
-                    "title": "Technical Analysis Fundamentals",
-                    "content": "# Technical Analysis Fundamentals\n\nLearn to read and interpret stock charts using technical indicators.\n\n## Read More Below\n\nSee \ud83d\udcda Understanding Technical Indicators below\n\n## Key Topics\n- Support and Resistance\n- Moving Averages\n- RSI (Relative Strength Index)\n- MACD (Moving Average Convergence Divergence)",
-                    "quiz": [
-                        {
-                            "question": "What does RSI measure?",
-                            "options": [
-                                "Market Trend",
-                                "Volatility",
-                                "Strength of a stock's price",
-                                "Investor Sentiment"
-                            ],
-                            "correct": 2
+                            "correct": 1,
+                            "explanation": "Market makers are crucial to the efficient functioning of financial markets. Their primary role is to maintain liquidity by:\n\n1. Always being ready to buy or sell securities\n2. Maintaining an inventory of stocks\n3. Quoting both buy (bid) and sell (ask) prices\n4. Profiting from the spread between bid and ask prices\n\nExample: If you want to buy 100 shares of a less frequently traded stock, without market makers, you might have to wait hours or days to find a seller. Market makers solve this by:\n- Buying from sellers even when there's no immediate buyer\n- Selling to buyers even when there's no immediate seller\n- Adjusting prices to maintain balanced inventory\n\nThis service ensures:\n- Immediate trade execution\n- Price continuity\n- Market efficiency"
                         }
                     ]
                 }
+                // Additional modules will follow with similar detailed structure
             ]
         },
         {
