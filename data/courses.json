@@ -24,9 +24,64 @@
                             "correct": 1
                         }
                     ]
+                },
+                {
+                    "id": "module-2",
+                    "title": "Investment Strategies",
+                    "content": "# Investment Strategies\n\nLearn about different approaches to investing and how to choose the right strategy for your goals.\n\n## Common Strategies\n1. Value Investing\n2. Growth Investing\n3. Dividend Investing\n4. Index Investing\n\n## Risk Management\n- Diversification\n- Asset Allocation\n- Position Sizing",
+                    "quiz": [
+                        {
+                            "question": "What is diversification?",
+                            "options": [
+                                "Buying only tech stocks",
+                                "Investing in different asset classes to reduce risk",
+                                "Selling all investments at once",
+                                "Borrowing money to invest"
+                            ],
+                            "correct": 1
+                        }
+                    ]
+                },
+                {
+                    "id": "module-3",
+                    "title": "Technical Analysis Fundamentals",
+                    "content": "# Technical Analysis Fundamentals\n\nLearn to read and interpret stock charts using technical indicators.\n\n## Read More Below\n\nSee \ud83d\udcda Understanding Technical Indicators below\n\n## Key Topics\n- Support and Resistance\n- Moving Averages\n- RSI (Relative Strength Index)\n- MACD (Moving Average Convergence Divergence)",
+                    "quiz": [
+                        {
+                            "question": "What does RSI measure?",
+                            "options": [
+                                "Market Trend",
+                                "Volatility",
+                                "Strength of a stock's price",
+                                "Investor Sentiment"
+                            ],
+                            "correct": 2
+                        }
+                    ]
                 }
             ]
         }
     ],
-    "user_progress": {}
+    "user_progress": {
+        "theyounginvestor": {
+            "vib-investing-101": {
+                "modules": {
+                    "module-1": {
+                        "completed": true,
+                        "completed_at": "2024-12-30T04:54:49.375021"
+                    },
+                    "module-2": {
+                        "completed": true,
+                        "completed_at": "2024-12-30T04:58:48.112972"
+                    },
+                    "module-3": {
+                        "completed": true,
+                        "completed_at": "2024-12-30T05:02:11.578776"
+                    }
+                },
+                "started_at": "2024-12-30T04:54:49.375007",
+                "last_updated": "2024-12-30T05:02:11.578790"
+            }
+        }
+    }
 }
