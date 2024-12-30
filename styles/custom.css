@@ -160,3 +160,58 @@ div.stButton > button:hover {
         transform: scale(1);
     }
 }
+
+/* Add to the existing CSS file */
+
+/* Notification Bell Styles */
+[data-testid="stButton"] button:has(div:contains("🔔")) {
+    background: transparent;
+    border: none;
+    color: inherit;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+[data-testid="stButton"] button:has(div:contains("🔔")):hover {
+    background: rgba(0, 171, 65, 0.1);
+    transform: scale(1.1);
+}
+
+/* Notification Badge */
+[data-testid="stButton"] button:has(div:contains("🔔")) div {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Notification Popup Animation */
+.notification-popup {
+    animation: slideInDown 0.3s ease-out;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Notification Message Styles */
+.notification-message {
+    background-color: rgba(0, 171, 65, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+    margin: 5px 0;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.notification-message small {
+    color: #00AB41;
+    font-size: 0.8rem;
+}

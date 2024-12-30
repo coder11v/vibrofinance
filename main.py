@@ -41,6 +41,8 @@ if "portfolio_update" not in st.session_state:
     st.session_state.portfolio_update = None
 if "goal_update" not in st.session_state:
     st.session_state.goal_update = None
+if "show_notifications" not in st.session_state:
+    st.session_state.show_notifications = False
 
 # Check authentication
 if not st.session_state.authenticated:
@@ -50,11 +52,59 @@ else:
     auth_manager = AuthManager()
     logger.info(f"User {st.session_state.username} logged in.")
     # Header with user greeting and logout
-    col1, col2 = st.columns([3, 1])
+    col1, col2, col3 = st.columns([3, 0.5, 0.5])
     with col1:
         st.title("📈 ViBro Finance")
         st.markdown(f"### Welcome back, {st.session_state.username}! 👋")
+
+    # Add notification bell in the middle column
     with col2:
+        notifications = auth_manager.get_notifications(st.session_state.username)
+        unread_count = len([n for n in notifications if not n['read']])
+
+        if notifications:
+            notification_button = f"🔔 {unread_count}" if unread_count > 0 else "🔔"
+            if st.button(notification_button, key="notification_bell"):
+                st.session_state.show_notifications = not st.session_state.get('show_notifications', False)
+        else:
+            st.button("🔔", key="notification_bell", disabled=True)
+
+        # Show notifications popup when clicked
+        if st.session_state.get('show_notifications', False) and notifications:
+            with st.container():
+                st.markdown("""
+                    <style>
+                    .notification-popup {
+                        position: fixed;
+                        top: 60px;
+                        right: 20px;
+                        max-width: 300px;
+                        z-index: 1000;
+                        background: var(--secondary-background-color);
+                        border-radius: 8px;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                        padding: 1rem;
+                    }
+                    </style>
+                    <div class="notification-popup">
+                """, unsafe_allow_html=True)
+
+                for notification in notifications:
+                    if not notification['read']:
+                        st.markdown(f"""
+                            <div style='background-color: rgba(0, 171, 65, 0.1); padding: 10px; border-radius: 5px; margin: 5px 0;'>
+                                <small style='color: #00AB41'>From {notification['from']} at {notification['timestamp']}</small><br>
+                                {notification['message']}
+                            </div>
+                        """, unsafe_allow_html=True)
+                        if st.button("Mark as Read", key=f"notify_{notification['id']}"):
+                            if auth_manager.mark_notification_as_read(st.session_state.username, notification["id"]):
+                                st.rerun()
+
+                st.markdown("</div>", unsafe_allow_html=True)
+
+    # Logout button in the last column
+    with col3:
         if st.button("Logout", key="logout"):
             logout()
 
