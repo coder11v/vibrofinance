@@ -60,6 +60,143 @@
                     ]
                 }
             ]
+        },
+        {
+            "id": "financial-fundamentals",
+            "title": "Financial Market Fundamentals",
+            "description": "Master the essentials of financial markets with our comprehensive beginner course. Perfect for those starting their investment journey.",
+            "difficulty": "Beginner",
+            "duration": "10 hours",
+            "modules": [
+                {
+                    "id": "module-1",
+                    "title": "Understanding Stock Markets",
+                    "content": "# Understanding Stock Markets\n\nLearn the fundamentals of how stock markets work and why they're essential to the global economy.\n\n## Key Concepts\n- What are stocks and why companies issue them\n- How stock exchanges function\n- Market participants and their roles\n- Basic order types and execution\n\n## Important Terms\n- Bull vs Bear Markets\n- Market Capitalization\n- Bid-Ask Spread\n- Trading Volume\n\n## Getting Started\n1. Opening a brokerage account\n2. Understanding market hours\n3. Reading stock quotes\n4. Basic market indicators",
+                    "quiz": [
+                        {
+                            "question": "What does market capitalization represent?",
+                            "options": [
+                                "The total number of shares a company has issued",
+                                "The total value of a company's outstanding shares",
+                                "The daily trading volume of a stock",
+                                "The company's annual revenue"
+                            ],
+                            "correct": 1
+                        }
+                    ]
+                },
+                {
+                    "id": "module-2",
+                    "title": "Investment Strategies",
+                    "content": "# Investment Strategies\n\nDiscover various approaches to investing and how to develop your personal investment strategy.\n\n## Core Strategies\n- Buy and Hold\n- Dollar-Cost Averaging\n- Value Investing\n- Growth Investing\n\n## Risk Management\n1. Understanding Risk Tolerance\n2. Portfolio Rebalancing\n3. Stop-Loss Orders\n4. Position Sizing",
+                    "quiz": [
+                        {
+                            "question": "What is dollar-cost averaging?",
+                            "options": [
+                                "Buying stocks at their lowest price",
+                                "Investing a fixed amount at regular intervals",
+                                "Selling stocks when they reach a certain price",
+                                "Trading stocks daily for profit"
+                            ],
+                            "correct": 1
+                        }
+                    ]
+                },
+                {
+                    "id": "module-3",
+                    "title": "Basics of Risk Management",
+                    "content": "# Risk Management Fundamentals\n\nLearn how to protect your investments and manage risk effectively.\n\n## Types of Risk\n- Market Risk\n- Company-Specific Risk\n- Interest Rate Risk\n- Inflation Risk\n\n## Risk Management Tools\n1. Diversification\n2. Asset Allocation\n3. Stop-Loss Orders\n4. Risk Assessment Methods",
+                    "quiz": [
+                        {
+                            "question": "Which risk cannot be eliminated through diversification?",
+                            "options": [
+                                "Company-specific risk",
+                                "Market risk",
+                                "Industry risk",
+                                "Management risk"
+                            ],
+                            "correct": 1
+                        }
+                    ]
+                },
+                {
+                    "id": "module-4",
+                    "title": "Introduction to Mutual Funds and ETFs",
+                    "content": "# Understanding Mutual Funds and ETFs\n\nExplore the world of pooled investments and their benefits for individual investors.\n\n## Key Topics\n- Types of Mutual Funds\n- ETF Structure and Benefits\n- Fund Expenses and Fees\n- Choosing the Right Fund\n\n## Investment Vehicles\n1. Index Funds\n2. Actively Managed Funds\n3. Sector ETFs\n4. Bond Funds",
+                    "quiz": [
+                        {
+                            "question": "What is the main difference between ETFs and mutual funds?",
+                            "options": [
+                                "ETFs can only track indexes",
+                                "ETFs trade throughout the day on exchanges",
+                                "Mutual funds are always cheaper",
+                                "ETFs cannot hold bonds"
+                            ],
+                            "correct": 1
+                        }
+                    ]
+                },
+                {
+                    "id": "module-5",
+                    "title": "Financial Goal Setting",
+                    "content": "# Financial Goal Setting\n\nLearn to set and achieve your financial objectives through smart planning and execution.\n\n## Goal Framework\n- Short-term vs Long-term Goals\n- SMART Goal Setting\n- Investment Time Horizons\n- Risk Tolerance Assessment\n\n## Implementation\n1. Creating a Financial Plan\n2. Monitoring Progress\n3. Adjusting Strategies\n4. Measuring Success",
+                    "quiz": [
+                        {
+                            "question": "What does the 'M' in SMART goals stand for?",
+                            "options": [
+                                "Manageable",
+                                "Meaningful",
+                                "Measurable",
+                                "Mindful"
+                            ],
+                            "correct": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "intermediate-investing",
+            "title": "Intermediate Investment Strategies",
+            "description": "Advance your investment knowledge with sophisticated strategies and deeper market understanding.",
+            "difficulty": "Intermediate",
+            "duration": "15 hours",
+            "modules": [
+                {
+                    "id": "module-6",
+                    "title": "Portfolio Diversification Techniques",
+                    "content": "# Advanced Portfolio Diversification\n\nMaster the art of building a well-balanced investment portfolio.\n\n## Diversification Strategies\n- Asset Class Diversification\n- Geographic Diversification\n- Sector Allocation\n- Alternative Investments\n\n## Implementation\n1. Correlation Analysis\n2. Risk-Adjusted Returns\n3. Rebalancing Strategies\n4. Portfolio Optimization",
+                    "quiz": [
+                        {
+                            "question": "What is the primary benefit of negative correlation in a portfolio?",
+                            "options": [
+                                "Higher returns",
+                                "Lower risk",
+                                "Better liquidity",
+                                "Tax efficiency"
+                            ],
+                            "correct": 1
+                        }
+                    ]
+                },
+                {
+                    "id": "module-7",
+                    "title": "Bond Market Basics",
+                    "content": "# Understanding Bond Markets\n\nExplore fixed-income securities and their role in investment portfolios.\n\n## Bond Fundamentals\n- Types of Bonds\n- Yield Calculations\n- Duration and Convexity\n- Credit Ratings\n\n## Market Analysis\n1. Interest Rate Impact\n2. Yield Curve Analysis\n3. Bond Pricing\n4. Risk Assessment",
+                    "quiz": [
+                        {
+                            "question": "What happens to bond prices when interest rates rise?",
+                            "options": [
+                                "They rise",
+                                "They fall",
+                                "They stay the same",
+                                "It depends on the bond type"
+                            ],
+                            "correct": 1
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "user_progress": {
@@ -77,6 +214,16 @@
                     "module-3": {
                         "completed": true,
                         "completed_at": "2024-12-30T05:02:11.578776"
+                    }
+                },
+                "started_at": "2024-12-30T04:54:49.375007",
+                "last_updated": "2024-12-30T05:02:11.578790"
+            },
+            "financial-fundamentals": {
+                "modules": {
+                    "module-1": {
+                        "completed": true,
+                        "completed_at": "2024-12-30T04:54:49.375021"
                     }
                 },
                 "started_at": "2024-12-30T04:54:49.375007",
