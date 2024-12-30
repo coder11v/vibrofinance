@@ -539,6 +539,35 @@ else:
                     else:
                         st.warning("Unable to fetch users list")
 
+                    # Add notification controls
+                    st.markdown("### Send Notification")
+                    notify_user = st.selectbox(
+                        "Select User",
+                        [user["username"] for user in users if user["username"] != st.session_state.username]
+                    )
+                    notification_message = st.text_area("Notification Message")
+                    if st.button("Send Notification", type="primary"):
+                        if auth_manager.send_notification(st.session_state.username, notify_user, notification_message):
+                            st.success(f"Notification sent to {notify_user}")
+                        else:
+                            st.error("Failed to send notification")
+
+            # Add notification display for all users
+            notifications = auth_manager.get_notifications(st.session_state.username)
+            if notifications:
+                with st.expander(f"📬 Notifications ({len([n for n in notifications if not n['read']])} unread)", expanded=True):
+                    for notification in notifications:
+                        if not notification["read"]:
+                            st.markdown(f"""
+                                <div style='background-color: rgba(0, 171, 65, 0.1); padding: 10px; border-radius: 5px; margin: 5px 0;'>
+                                    <small style='color: #00AB41'>From {notification['from']} at {notification['timestamp']}</small><br>
+                                    {notification['message']}
+                                </div>
+                            """, unsafe_allow_html=True)
+                            if st.button("Mark as Read", key=f"notify_{notification['id']}"):
+                                if auth_manager.mark_notification_as_read(st.session_state.username, notification["id"]):
+                                    st.rerun()
+
             # Message input
             chat_input = st.text_input("Type your message (Markdown supported):", key="chat_input")
             if st.button("Send", type="primary"):

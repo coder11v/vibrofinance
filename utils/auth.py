@@ -21,7 +21,7 @@ class AuthManager:
             os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
             if not os.path.exists(self.db_path):
                 with open(self.db_path, 'w') as f:
-                    json.dump({"users": {}, "chat_messages": []}, f)
+                    json.dump({"users": {}, "chat_messages": [], "notifications": {}}, f)
         except Exception as e:
             logger.error(f"Error ensuring database exists: {str(e)}")
             raise
@@ -198,3 +198,57 @@ class AuthManager:
         except Exception as e:
             logger.error(f"Error getting search history: {str(e)}")
             return []
+
+    def send_notification(self, from_username: str, to_username: str, message: str) -> bool:
+        """Send a notification to a user (superuser only)"""
+        try:
+            if not self.is_superuser(from_username):
+                return False
+
+            db = self._load_db()
+            if "notifications" not in db:
+                db["notifications"] = {}
+
+            if to_username not in db["notifications"]:
+                db["notifications"][to_username] = []
+
+            notification = {
+                "id": len(db["notifications"][to_username]),
+                "from": from_username,
+                "message": message,
+                "timestamp": datetime.now().isoformat(),
+                "read": False
+            }
+
+            db["notifications"][to_username].append(notification)
+            self._save_db(db)
+            return True
+        except Exception as e:
+            logger.error(f"Error sending notification: {str(e)}")
+            return False
+
+    def get_notifications(self, username: str) -> List[Dict]:
+        """Get notifications for a user"""
+        try:
+            db = self._load_db()
+            return db.get("notifications", {}).get(username, [])
+        except Exception as e:
+            logger.error(f"Error getting notifications: {str(e)}")
+            return []
+
+    def mark_notification_as_read(self, username: str, notification_id: int) -> bool:
+        """Mark a notification as read"""
+        try:
+            db = self._load_db()
+            notifications = db.get("notifications", {}).get(username, [])
+
+            for notification in notifications:
+                if notification["id"] == notification_id:
+                    notification["read"] = True
+                    break
+
+            self._save_db(db)
+            return True
+        except Exception as e:
+            logger.error(f"Error marking notification as read: {str(e)}")
+            return False
