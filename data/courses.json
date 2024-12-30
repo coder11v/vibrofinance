@@ -1,0 +1,56 @@
+{
+    "courses": [
+        {
+            "id": "investing-101",
+            "title": "Investing 101",
+            "description": "Learn the basics of investing and financial markets",
+            "difficulty": "Beginner",
+            "duration": "2 hours",
+            "modules": [
+                {
+                    "id": "module-1",
+                    "title": "Understanding Stocks",
+                    "content": "Learn what stocks are and how they work...",
+                    "quiz": [
+                        {
+                            "question": "What is a stock?",
+                            "options": [
+                                "A type of bond",
+                                "Ownership in a company",
+                                "A savings account",
+                                "A type of mutual fund"
+                            ],
+                            "correct": 1
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "user_progress": {
+        "theyounginvestor": {
+            "investing-101": {
+                "modules": {
+                    "module-1": {
+                        "completed": true,
+                        "completed_at": "2024-12-30T01:56:32.278751"
+                    }
+                },
+                "started_at": "2024-12-30T01:56:32.278741",
+                "last_updated": "2024-12-30T01:56:32.278753"
+            }
+        },
+        "pinkincali": {
+            "investing-101": {
+                "modules": {
+                    "module-1": {
+                        "completed": true,
+                        "completed_at": "2024-12-30T03:08:15.152828"
+                    }
+                },
+                "started_at": "2024-12-30T03:08:15.152813",
+                "last_updated": "2024-12-30T03:08:15.152832"
+            }
+        }
+    }
+}

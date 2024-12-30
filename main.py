@@ -715,7 +715,7 @@ else:
                         if not notification["read"]:
                             st.markdown(f"""
                                 <div style='background-color: rgba(0, 171, 65, 0.1); padding: 10px; border-radius: 5px; margin: 5px 0;'>
-                                    <small style='color: #00AB41'>From {notification['from']} at {notification['timestamp']}</small><br>
+                                    <small style='color: #00AB41'>From ViBro Finance</small><br>
                                     {notification['message']}
                                 </div>
                             """, unsafe_allow_html=True)

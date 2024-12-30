@@ -3,7 +3,7 @@
         "theyounginvestor": {
             "password": "2e44ff892b0a37a316597f8214e16929fa0406388a88abe9842eba6a0dc5755d",
             "created_at": "2024-12-29T20:21:18.101285",
-            "last_login": "2024-12-30T01:51:24.868891",
+            "last_login": "2024-12-30T03:02:53.743988",
             "search_history": [
                 {
                     "timestamp": "2024-12-29T20:21:48.516060",
@@ -64,6 +64,21 @@
                     "timestamp": "2024-12-30T01:22:59.160433",
                     "symbol": "GOOG",
                     "period": "1y"
+                },
+                {
+                    "timestamp": "2024-12-30T02:01:24.107493",
+                    "symbol": "COST",
+                    "period": "1y"
+                },
+                {
+                    "timestamp": "2024-12-30T02:03:43.568277",
+                    "symbol": "COST",
+                    "period": "5y"
+                },
+                {
+                    "timestamp": "2024-12-30T02:15:55.506936",
+                    "symbol": "QQQ",
+                    "period": "5y"
                 }
             ],
             "portfolio": [],
@@ -111,6 +126,55 @@
             ],
             "portfolio": [],
             "goals": []
+        },
+        "bbua": {
+            "password": "83c514e06e711ce61d6ac82622505a6458002c75b0cbaed84d4ac701333ab958",
+            "created_at": "2024-12-30T02:00:23.856652",
+            "last_login": "2024-12-30T02:03:56.880780",
+            "search_history": [
+                {
+                    "timestamp": "2024-12-30T02:01:26.608287",
+                    "symbol": "AAPL",
+                    "period": "1y"
+                }
+            ],
+            "portfolio": [],
+            "goals": []
+        },
+        "mama": {
+            "password": "bc5b035027f4e5f6827d36d96b1ff2f431d364db3c1808e2d8a0b8820ae1c0bf",
+            "created_at": "2024-12-30T02:08:15.259654",
+            "last_login": "2024-12-30T02:08:35.667939",
+            "search_history": [],
+            "portfolio": [],
+            "goals": []
+        },
+        "invest": {
+            "password": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+            "created_at": "2024-12-30T02:13:51.877832",
+            "last_login": "2024-12-30T02:59:19.715617",
+            "search_history": [],
+            "portfolio": [],
+            "goals": []
+        },
+        "pinkincali": {
+            "password": "7c053cbb689d4749442c341913214d64f64f8961acc16373639b84134d14eb8b",
+            "created_at": "2024-12-30T03:02:14.237104",
+            "last_login": "2024-12-30T03:02:33.656049",
+            "search_history": [
+                {
+                    "timestamp": "2024-12-30T03:05:40.646596",
+                    "symbol": "GOOG",
+                    "period": "5y"
+                },
+                {
+                    "timestamp": "2024-12-30T03:06:13.694957",
+                    "symbol": "GOOG",
+                    "period": "5y"
+                }
+            ],
+            "portfolio": [],
+            "goals": []
         }
     },
     "chat_messages": [
@@ -133,6 +197,12 @@
             "username": "theyounginvestor",
             "message": "How ya doin",
             "timestamp": "2024-12-29T22:26:43.890863"
+        },
+        {
+            "id": 4,
+            "username": "invest",
+            "message": "Hello",
+            "timestamp": "2024-12-30T02:14:12.809112"
         }
     ],
     "notifications": {
@@ -215,6 +285,49 @@
                 "message": "Hello All Investors!\n\n- We just launched 1.5, with this handy dandy notification feature. \n- Tell me in the chat if you get this!",
                 "timestamp": "2024-12-30T01:52:48.215956",
                 "read": false
+            }
+        ],
+        "bbua": [
+            {
+                "id": 0,
+                "from": "theyounginvestor",
+                "message": "Hello Bhavna Bua!!!",
+                "timestamp": "2024-12-30T02:02:22.344843",
+                "read": true
+            }
+        ],
+        "mama": [
+            {
+                "id": 0,
+                "from": "theyounginvestor",
+                "message": "Hello Mama!\n\nI am ViBro Finance, your guide to unlocking investing.\n",
+                "timestamp": "2024-12-30T02:09:44.418624",
+                "read": false
+            },
+            {
+                "id": 1,
+                "from": "theyounginvestor",
+                "message": "# is",
+                "timestamp": "2024-12-30T02:10:20.030779",
+                "read": true
+            }
+        ],
+        "invest": [
+            {
+                "id": 0,
+                "from": "theyounginvestor",
+                "message": "hgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgr",
+                "timestamp": "2024-12-30T02:15:03.901858",
+                "read": true
+            }
+        ],
+        "pinkincali": [
+            {
+                "id": 0,
+                "from": "theyounginvestor",
+                "message": "Hi there Jiya!\n\nI hope this message reaches you, enjoy ViBro Finance! \n\nI will teach you all you need to know! ",
+                "timestamp": "2024-12-30T03:04:08.560927",
+                "read": true
             }
         ]
     }
