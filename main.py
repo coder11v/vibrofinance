@@ -588,7 +588,8 @@ else:
             st.markdown("### Available Courses")
 
             for course in courses:
-                with st.expander(f"📘 {course['title']} - {course['difficulty']}", expanded=True):
+                # Create an expandable section for each course
+                with st.expander(f"📘 {course['title']}", expanded=True):
                     col1, col2 = st.columns([3, 1])
 
                     with col1:
@@ -605,9 +606,11 @@ else:
                             )
                         )
                         progress = (modules_completed / len(course['modules'])) if len(course['modules']) > 0 else 0
+                        progress_percentage = progress * 100
 
-                        st.progress(float(progress))
-                        st.markdown(f"**Progress:** {progress*100:.0f}%")
+                        # Display progress bar
+                        st.write(f"Progress: {progress_percentage}%")
+                        st.progress(progress)
 
                     with col2:
                         if st.button("Start Course", key=f"start_{course['id']}"):
@@ -656,7 +659,6 @@ else:
                                             st.rerun()
                                         else:
                                             st.error("Try again!")
-
 
         elif section == "Investor Chat":
             st.title("💬 Investor Chat")
@@ -803,7 +805,7 @@ else:
             - 🎯 These help identify trends and potential support/resistance levels
 
             #### RSI (Relative Strength Index)
-            - A momentum indicator that measures the speed and magnitude of recent price changes
+            - A momentum indicator that measures the speedand magnitude of recent price changes
             - Scale: 0 to 100
             - Above 70: Potentially overbought
             -Below 30: Potentially oversold

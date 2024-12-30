@@ -2,7 +2,7 @@
     "courses": [
         {
             "id": "investing-101",
-            "title": "Investing 101",
+            "title": "Investing 101 - Beginner",
             "description": "Learn the basics of investing and financial markets",
             "difficulty": "Beginner",
             "duration": "2 hours",
@@ -33,23 +33,11 @@
                 "modules": {
                     "module-1": {
                         "completed": true,
-                        "completed_at": "2024-12-30T01:56:32.278751"
+                        "completed_at": "2024-12-30T04:46:07.806987"
                     }
                 },
                 "started_at": "2024-12-30T01:56:32.278741",
-                "last_updated": "2024-12-30T01:56:32.278753"
-            }
-        },
-        "pinkincali": {
-            "investing-101": {
-                "modules": {
-                    "module-1": {
-                        "completed": true,
-                        "completed_at": "2024-12-30T03:08:15.152828"
-                    }
-                },
-                "started_at": "2024-12-30T03:08:15.152813",
-                "last_updated": "2024-12-30T03:08:15.152832"
+                "last_updated": "2024-12-30T04:46:07.806997"
             }
         }
     }
