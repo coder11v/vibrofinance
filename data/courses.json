@@ -1,24 +1,25 @@
 {
     "courses": [
         {
-            "id": "investing-101",
-            "title": "Investing 101 - Beginner",
-            "description": "Learn the basics of investing and financial markets",
+            "id": "vib-investing-101",
+            "title": "VIB Investing 101",
+            "description": "Master the fundamentals of investing with VIB's comprehensive beginner course. Learn market basics, risk management, and smart investment strategies.",
             "difficulty": "Beginner",
-            "duration": "2 hours",
+            "duration": "4 hours",
+            "url": "invest.veerbajaj.com",
             "modules": [
                 {
                     "id": "module-1",
-                    "title": "Understanding Stocks",
-                    "content": "Learn what stocks are and how they work...",
+                    "title": "Understanding Stock Markets",
+                    "content": "# Introduction to Stock Markets\n\nThe stock market is a vital component of the global economy where shares of publicly traded companies are bought and sold. Here's what you need to know:\n\n## Key Concepts\n- Stocks represent ownership in a company\n- Markets operate on supply and demand\n- Prices reflect company value and market sentiment\n\n## Why Invest in Stocks?\n1. Potential for long-term growth\n2. Dividend income\n3. Portfolio diversification\n4. Hedge against inflation",
                     "quiz": [
                         {
-                            "question": "What is a stock?",
+                            "question": "What does owning a stock represent?",
                             "options": [
-                                "A type of bond",
+                                "A loan to a company",
                                 "Ownership in a company",
-                                "A savings account",
-                                "A type of mutual fund"
+                                "A promise to buy products",
+                                "A job guarantee"
                             ],
                             "correct": 1
                         }
@@ -27,18 +28,5 @@
             ]
         }
     ],
-    "user_progress": {
-        "theyounginvestor": {
-            "investing-101": {
-                "modules": {
-                    "module-1": {
-                        "completed": true,
-                        "completed_at": "2024-12-30T04:46:07.806987"
-                    }
-                },
-                "started_at": "2024-12-30T01:56:32.278741",
-                "last_updated": "2024-12-30T04:46:07.806997"
-            }
-        }
-    }
+    "user_progress": {}
 }

@@ -606,11 +606,10 @@ else:
                             )
                         )
                         progress = (modules_completed / len(course['modules'])) if len(course['modules']) > 0 else 0
-                        progress_percentage = progress * 100
 
                         # Display progress bar
-                        st.write(f"Progress: {progress_percentage}%")
-                        st.progress(progress)
+                        st.write(f"Progress: {progress*100}%")
+                        st.progress(float(progress))
 
                     with col2:
                         if st.button("Start Course", key=f"start_{course['id']}"):
