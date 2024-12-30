@@ -1,0 +1,2 @@
+[pages]
+hide_pages = ["main", "auth"]

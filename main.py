@@ -9,6 +9,10 @@ from utils.auth import AuthManager
 from utils.ml_predictor import StockPredictor # Added import
 from datetime import datetime # Added import
 from pages.auth import init_auth, login_page, logout  # Re-added import
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 # Page configuration
 st.set_page_config(
@@ -44,7 +48,7 @@ if not st.session_state.authenticated:
 else:
     # Initialize AuthManager for user activity tracking
     auth_manager = AuthManager()
-
+    logger.info(f"User {st.session_state.username} logged in.")
     # Header with user greeting and logout
     col1, col2 = st.columns([3, 1])
     with col1:

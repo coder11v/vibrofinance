@@ -20,7 +20,7 @@ def get_stock_data(symbol, period='1y'):
         logger.error(f"Error fetching stock data for {symbol}: {str(e)}")
         raise Exception(f"Error fetching stock data for {symbol}: {str(e)}")
 
-def get_multiple_stocks_data(symbols, period='1y'):
+def get_multiple_stocks_data(symbols, period='5y'):
     """Fetch data for multiple stocks"""
     try:
         logger.info(f"Fetching data for multiple symbols: {symbols}")

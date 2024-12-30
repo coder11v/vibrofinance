@@ -3,7 +3,7 @@
         "theyounginvestor": {
             "password": "2e44ff892b0a37a316597f8214e16929fa0406388a88abe9842eba6a0dc5755d",
             "created_at": "2024-12-29T20:21:18.101285",
-            "last_login": "2024-12-29T23:02:32.284162",
+            "last_login": "2024-12-30T01:32:10.749906",
             "search_history": [
                 {
                     "timestamp": "2024-12-29T20:21:48.516060",
@@ -24,6 +24,46 @@
                     "timestamp": "2024-12-29T22:23:17.764841",
                     "symbol": "AAPL",
                     "period": "1y"
+                },
+                {
+                    "timestamp": "2024-12-30T01:22:35.649460",
+                    "symbol": "AAPL",
+                    "period": "1y"
+                },
+                {
+                    "timestamp": "2024-12-30T01:22:35.651901",
+                    "symbol": "MSFT",
+                    "period": "1y"
+                },
+                {
+                    "timestamp": "2024-12-30T01:22:35.660078",
+                    "symbol": "META",
+                    "period": "1y"
+                },
+                {
+                    "timestamp": "2024-12-30T01:22:35.664911",
+                    "symbol": "PAJAMAS-USD",
+                    "period": "1y"
+                },
+                {
+                    "timestamp": "2024-12-30T01:22:59.145461",
+                    "symbol": "AAPL",
+                    "period": "1y"
+                },
+                {
+                    "timestamp": "2024-12-30T01:22:59.148172",
+                    "symbol": "MSFT",
+                    "period": "1y"
+                },
+                {
+                    "timestamp": "2024-12-30T01:22:59.157011",
+                    "symbol": "META",
+                    "period": "1y"
+                },
+                {
+                    "timestamp": "2024-12-30T01:22:59.160433",
+                    "symbol": "GOOG",
+                    "period": "1y"
                 }
             ],
             "portfolio": [],
@@ -32,7 +72,7 @@
         "mrpemberton": {
             "password": "96166e27af5a3c431ffa7247ad4e1b2d488008311887cedc655121565721cbce",
             "created_at": "2024-12-29T22:13:39.690269",
-            "last_login": "2024-12-29T22:14:00.276368",
+            "last_login": "2024-12-29T23:05:39.542821",
             "search_history": [
                 {
                     "timestamp": "2024-12-29T22:14:11.508250",
@@ -43,6 +83,30 @@
                     "timestamp": "2024-12-29T22:14:29.602554",
                     "symbol": "AAPL",
                     "period": "1y"
+                }
+            ],
+            "portfolio": [],
+            "goals": []
+        },
+        "Pops": {
+            "password": "440b928c91a91dd11e64223e5cd1052a26077b22b54aafc9fd414a9f2177bf51",
+            "created_at": "2024-12-30T01:23:08.831431",
+            "last_login": "2024-12-30T01:23:39.826252",
+            "search_history": [
+                {
+                    "timestamp": "2024-12-30T01:24:11.584327",
+                    "symbol": "META",
+                    "period": "5y"
+                },
+                {
+                    "timestamp": "2024-12-30T01:24:43.230890",
+                    "symbol": "META",
+                    "period": "5y"
+                },
+                {
+                    "timestamp": "2024-12-30T01:24:43.232096",
+                    "symbol": "GOOG",
+                    "period": "5y"
                 }
             ],
             "portfolio": [],
