@@ -604,10 +604,10 @@ else:
                                 module['id']
                             )
                         )
-                        progress = (modules_completed / len(course['modules'])) * 100
+                        progress = (modules_completed / len(course['modules'])) if len(course['modules']) > 0 else 0
 
-                        st.progress(progress)
-                        st.markdown(f"**Progress:** {progress:.0f}%")
+                        st.progress(float(progress))
+                        st.markdown(f"**Progress:** {progress*100:.0f}%")
 
                     with col2:
                         if st.button("Start Course", key=f"start_{course['id']}"):
@@ -806,7 +806,7 @@ else:
             - A momentum indicator that measures the speed and magnitude of recent price changes
             - Scale: 0 to 100
             - Above 70: Potentially overbought
-            - Below 30: Potentially oversold
+            -Below 30: Potentially oversold
             - 🎯 Helps identify potential reversal points
 
             ### Key Metrics Explained
