@@ -11,7 +11,7 @@ from datetime import datetime # Added import
 from pages.auth import init_auth, login_page, logout  # Re-added import
 import logging
 from utils.education_manager import EducationManager  # Add this import
-
+import pytz
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -766,10 +766,21 @@ else:
                 st.markdown("### Recent Messages")
                 messages = auth_manager.get_chat_messages()
 
-                def format_chat_message(msg, is_current_user):
-                    timestamp = datetime.fromisoformat(msg['timestamp'])
-                    formatted_time = timestamp.strftime("%I:%M %p")
+                def format_timestamp(dt):
+                    """Convert timestamp to US Pacific time"""
+                    pacific = pytz.timezone('US/Pacific')
+                    if isinstance(dt, str):
+                        dt = datetime.fromisoformat(dt)
+                    if dt.tzinfo is None:
+                        dt = dt.replace(tzinfo=pytz.UTC)
+                    return dt.astimezone(pacific).strftime("%I:%M %p %Z")
 
+
+                def format_chat_message(msg):
+                    timestamp = datetime.fromisoformat(msg['timestamp'])
+                    formatted_time = format_timestamp(timestamp)
+
+                    is_current_user = msg['username'] == st.session_state.username
                     if is_current_user:
                         st.markdown(f"""
                             <div style='text-align: right; margin: 10px 0;'>
@@ -800,8 +811,7 @@ else:
                                 st.rerun()
 
                 for msg in reversed(messages):
-                    is_current_user = msg['username'] == st.session_state.username
-                    format_chat_message(msg, is_current_user)
+                    format_chat_message(msg)
 
                 # Auto-scroll to bottom (placeholder for future enhancement)
                 st.markdown("""
@@ -809,7 +819,6 @@ else:
                     <script>document.getElementById('chat-bottom').scrollIntoView();
                     </script>
                 """, unsafe_allow_html=True)
-
 
         # Add Technical Indicators Explanation section at the bottom
         st.markdown("---")
