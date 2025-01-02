@@ -31,6 +31,10 @@ task = "packager.installForAll"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
+args = "echo ViB started running \"ViBro Finance\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
 args = "streamlit run main.py --server.port 5000"
 waitForPort = 5000
 

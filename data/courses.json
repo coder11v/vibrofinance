@@ -238,6 +238,16 @@
                 },
                 "started_at": "2024-12-30T04:54:49.375007",
                 "last_updated": "2024-12-30T05:02:11.578790"
+            },
+            "intermediate-investing": {
+                "modules": {
+                    "module-7": {
+                        "completed": true,
+                        "completed_at": "2024-12-30T05:36:47.262966"
+                    }
+                },
+                "started_at": "2024-12-30T05:36:47.262949",
+                "last_updated": "2024-12-30T05:36:47.262984"
             }
         }
     }

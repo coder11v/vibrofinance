@@ -12,6 +12,7 @@ from pages.auth import init_auth, login_page, logout  # Re-added import
 import logging
 from utils.education_manager import EducationManager  # Add this import
 
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -377,7 +378,7 @@ else:
 
                 investment_amount = st.number_input(
                     "Investment Amount ($)",
-                    min_value=1000,
+                    min_value=100,
                     max_value=10000000,
                     value=10000,
                     step=1000
@@ -432,54 +433,80 @@ else:
                             st.error(f"Error generating portfolio recommendation: {str(e)}")
 
             with tab2:
-                available_stocks = ["AAPL", "GOOGL", "MSFT", "AMZN", "META", "TSLA", "NVDA", "JPM", "BAC", "WMT"]
-                portfolio_stocks = st.multiselect(
-                    "Select stocks in your portfolio",
-                    options=available_stocks,
-                    default=["AAPL"]  # Changed default from 'ViBro' to 'AAPL'
-                )
+                # Initialize portfolio stocks in session state if not exists
+                if 'portfolio_stocks' not in st.session_state:
+                    st.session_state.portfolio_stocks = []
 
-                if st.button("Analyze Portfolio", type="primary"):
-                    with st.spinner("Analyzing portfolio..."):
+                # Add new stock input
+                new_stock = st.text_input("Enter stock symbol to add to portfolio", key="new_stock").upper()
+                if st.button("Add Stock"):
+                    if new_stock and new_stock not in st.session_state.portfolio_stocks:
                         try:
-                            analysis = analyze_portfolio_health(portfolio_stocks)
-
-                            # Display portfolio metrics
-                            st.subheader("Portfolio Overview")
-
-                            # Sector allocation
-                            st.markdown("#### Sector Allocation")
-                            sector_cols = st.columns(len(analysis["sector_allocation"]))
-                            for i, (sector, count) in enumerate(analysis["sector_allocation"].items()):
-                                sector_cols[i].metric(sector, f"{count} stocks")
-
-                            # Stock recommendations
-                            st.markdown("#### Stock Analysis")
-                            for rec in analysis["recommendations"]:
-                                st.markdown(f"### {rec['symbol']}")
-                                col1, col2 = st.columns(2)
-
-                                with col1:
-                                    st.markdown("**Analysis Summary**")
-                                    st.write(rec["analysis"]["summary"])
-
-                                with col2:
-                                    st.markdown("**Key Points**")
-                                    st.markdown("✅ **Strengths:**")
-                                    for strength in rec["analysis"]["strengths"]:
-                                        st.markdown(f"- {strength}")
-                                    st.markdown("⚠️ **Risks:**")
-                                    for risk in rec["analysis"]["risks"]:
-                                        st.markdown(f"- {risk}")
-
-                            # Add activity tracking for portfolio updates
-                            st.session_state.portfolio_update = {
-                                "portfolio_stocks": portfolio_stocks,
-                                "analysis": analysis
-                            }
-
+                            # Verify if stock exists by attempting to fetch its data
+                            _, info = get_stock_data(new_stock)
+                            if info:
+                                st.session_state.portfolio_stocks.append(new_stock)
+                                st.success(f"Added {new_stock} to portfolio")
+                            else:
+                                st.error(f"Could not find stock with symbol {new_stock}")
                         except Exception as e:
-                            st.error(f"Error analyzing portfolio: {str(e)}")
+                            st.error(f"Error adding stock: {str(e)}")
+
+                # Display current portfolio
+                st.subheader("Current Portfolio")
+                cols = st.columns([3, 1])
+                with cols[0]:
+                    for stock in st.session_state.portfolio_stocks:
+                        st.markdown(f"• {stock}")
+                with cols[1]:
+                    if st.button("Clear Portfolio"):
+                        st.session_state.portfolio_stocks = []
+                        st.rerun()
+
+                if st.session_state.portfolio_stocks:
+                    if st.button("Analyze Portfolio", type="primary"):
+                        with st.spinner("Analyzing portfolio..."):
+                            try:
+                                analysis = analyze_portfolio_health(st.session_state.portfolio_stocks)
+
+                                # Display portfolio metrics
+                                st.subheader("Portfolio Overview")
+
+                                # Sector allocation
+                                st.markdown("#### Sector Allocation")
+                                sector_cols = st.columns(len(analysis["sector_allocation"]))
+                                for i, (sector, count) in enumerate(analysis["sector_allocation"].items()):
+                                    sector_cols[i].metric(sector, f"{count} stocks")
+
+                                # Stock recommendations
+                                st.markdown("#### Stock Analysis")
+                                for rec in analysis["recommendations"]:
+                                    st.markdown(f"### {rec['symbol']}")
+                                    col1, col2 = st.columns(2)
+
+                                    with col1:
+                                        st.markdown("**Analysis Summary**")
+                                        st.write(rec["analysis"]["summary"])
+
+                                    with col2:
+                                        st.markdown("**Key Points**")
+                                        st.markdown("✅ **Strengths:**")
+                                        for strength in rec["analysis"]["strengths"]:
+                                            st.markdown(f"- {strength}")
+                                        st.markdown("⚠️ **Risks:**")
+                                        for risk in rec["analysis"]["risks"]:
+                                            st.markdown(f"- {risk}")
+
+                                # Add activity tracking for portfolio updates
+                                st.session_state.portfolio_update = {
+                                    "portfolio_stocks": st.session_state.portfolio_stocks,
+                                    "analysis": analysis
+                                }
+
+                            except Exception as e:
+                                st.error(f"Error analyzing portfolio: {str(e)}")
+                else:
+                    st.info("Add stocks to your portfolio to analyze them")
 
         elif section == "Goal Planning":
             st.title("🎯 Financial Goal Planning")
@@ -779,8 +806,7 @@ else:
                 # Auto-scroll to bottom (placeholder for future enhancement)
                 st.markdown("""
                     <div id='chat-bottom'></div>
-                    <script>
-                        document.getElementById('chat-bottom').scrollIntoView();
+                    <script>document.getElementById('chat-bottom').scrollIntoView();
                     </script>
                 """, unsafe_allow_html=True)
 

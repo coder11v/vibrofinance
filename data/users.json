@@ -3,7 +3,7 @@
         "theyounginvestor": {
             "password": "2e44ff892b0a37a316597f8214e16929fa0406388a88abe9842eba6a0dc5755d",
             "created_at": "2024-12-29T20:21:18.101285",
-            "last_login": "2024-12-30T05:25:19.254326",
+            "last_login": "2024-12-31T02:51:46.833063",
             "search_history": [
                 {
                     "timestamp": "2024-12-29T20:21:48.516060",
@@ -84,6 +84,11 @@
                     "timestamp": "2024-12-30T05:25:45.644187",
                     "symbol": "PRI",
                     "period": "5y"
+                },
+                {
+                    "timestamp": "2024-12-31T02:58:17.900550",
+                    "symbol": "AAPL",
+                    "period": "1y"
                 }
             ],
             "portfolio": [],
@@ -154,14 +159,6 @@
             "portfolio": [],
             "goals": []
         },
-        "invest": {
-            "password": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
-            "created_at": "2024-12-30T02:13:51.877832",
-            "last_login": "2024-12-30T04:51:11.340779",
-            "search_history": [],
-            "portfolio": [],
-            "goals": []
-        },
         "pinkincali": {
             "password": "7c053cbb689d4749442c341913214d64f64f8961acc16373639b84134d14eb8b",
             "created_at": "2024-12-30T03:02:14.237104",
@@ -180,34 +177,112 @@
             ],
             "portfolio": [],
             "goals": []
+        },
+        "invest": {
+            "password": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+            "created_at": "2024-12-30T02:13:51.877832",
+            "last_login": "2024-12-31T02:40:09.089610",
+            "search_history": [],
+            "portfolio": [],
+            "goals": []
+        },
+        "invest_1": {
+            "password": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+            "created_at": "2024-12-31T02:40:31.875306",
+            "last_login": null,
+            "search_history": [],
+            "portfolio": [],
+            "goals": []
+        },
+        "invest_2": {
+            "password": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+            "created_at": "2024-12-31T02:40:36.369781",
+            "last_login": null,
+            "search_history": [],
+            "portfolio": [],
+            "goals": []
+        },
+        "vfufu": {
+            "password": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+            "created_at": "2024-12-31T02:40:39.264715",
+            "last_login": "2024-12-31T03:18:31.780654",
+            "search_history": [
+                {
+                    "timestamp": "2024-12-31T02:58:06.277978",
+                    "symbol": "AAPL",
+                    "period": "1y"
+                }
+            ],
+            "portfolio": [],
+            "goals": []
+        },
+        "invest_4": {
+            "password": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+            "created_at": "2024-12-31T02:40:42.652870",
+            "last_login": null,
+            "search_history": [],
+            "portfolio": [],
+            "goals": []
+        },
+        "invest_5": {
+            "password": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+            "created_at": "2024-12-31T02:40:31.875306",
+            "last_login": null,
+            "search_history": [],
+            "portfolio": [],
+            "goals": []
+        },
+        "invest_6": {
+            "password": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+            "created_at": "2024-12-31T02:40:36.369781",
+            "last_login": null,
+            "search_history": [],
+            "portfolio": [],
+            "goals": []
+        },
+        "invest_7": {
+            "password": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+            "created_at": "2024-12-31T02:40:39.264715",
+            "last_login": null,
+            "search_history": [],
+            "portfolio": [],
+            "goals": []
+        },
+        "invest_8": {
+            "password": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+            "created_at": "2024-12-31T02:40:42.652870",
+            "last_login": null,
+            "search_history": [],
+            "portfolio": [],
+            "goals": []
+        },
+        "Testuser": {
+            "password": "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1",
+            "created_at": "2024-12-31T02:53:58.312811",
+            "last_login": null,
+            "search_history": [],
+            "portfolio": [],
+            "goals": []
         }
     },
     "chat_messages": [
         {
-            "username": "theyounginvestor",
-            "message": "# Hello Investors",
-            "timestamp": "2024-12-29T22:21:21.221160"
+            "id": 0,
+            "username": "ViBro Finance Admin",
+            "message": "Welcome to the Investor Chat.\nPlease adhere to the guidelines.",
+            "timestamp": "2024-12-01T23:59:59-08:00"
         },
         {
-            "username": "theyounginvestor",
-            "message": "# Hello Investors",
-            "timestamp": "2024-12-29T22:21:27.198828"
+            "id": 1,
+            "username": "vfufu",
+            "message": "THIS WEBSITE IS AWESOME",
+            "timestamp": "2024-12-31T03:01:08.781205"
         },
         {
+            "id": 2,
             "username": "theyounginvestor",
-            "message": "Hello Investors",
-            "timestamp": "2024-12-29T22:21:35.217362"
-        },
-        {
-            "username": "theyounginvestor",
-            "message": "How ya doin",
-            "timestamp": "2024-12-29T22:26:43.890863"
-        },
-        {
-            "id": 4,
-            "username": "invest",
-            "message": "Hello",
-            "timestamp": "2024-12-30T02:14:12.809112"
+            "message": "Thank you so much! Thank you for the inspiration",
+            "timestamp": "2024-12-31T03:01:40.496925"
         }
     ],
     "notifications": {
@@ -281,6 +356,13 @@
                 "message": "Hello All Investors!\n\n- We just launched 1.5, with this handy dandy notification feature. \n- Tell me in the chat if you get this!",
                 "timestamp": "2024-12-30T01:52:48.215946",
                 "read": true
+            },
+            {
+                "id": 10,
+                "from": "theyounginvestor",
+                "message": "1.5 is here!!!\n\nThe education panel is here! give it a spin",
+                "timestamp": "2024-12-30T05:37:57.789567",
+                "read": false
             }
         ],
         "Pops": [
@@ -289,6 +371,13 @@
                 "from": "theyounginvestor",
                 "message": "Hello All Investors!\n\n- We just launched 1.5, with this handy dandy notification feature. \n- Tell me in the chat if you get this!",
                 "timestamp": "2024-12-30T01:52:48.215956",
+                "read": false
+            },
+            {
+                "id": 1,
+                "from": "theyounginvestor",
+                "message": "1.5 is here!!!\n\nThe education panel is here! give it a spin",
+                "timestamp": "2024-12-30T05:37:57.789816",
                 "read": false
             }
         ],
@@ -299,6 +388,13 @@
                 "message": "Hello Bhavna Bua!!!",
                 "timestamp": "2024-12-30T02:02:22.344843",
                 "read": true
+            },
+            {
+                "id": 1,
+                "from": "theyounginvestor",
+                "message": "1.5 is here!!!\n\nThe education panel is here! give it a spin",
+                "timestamp": "2024-12-30T05:37:57.789825",
+                "read": false
             }
         ],
         "mama": [
@@ -315,6 +411,13 @@
                 "message": "# is",
                 "timestamp": "2024-12-30T02:10:20.030779",
                 "read": true
+            },
+            {
+                "id": 2,
+                "from": "theyounginvestor",
+                "message": "1.5 is here!!!\n\nThe education panel is here! give it a spin",
+                "timestamp": "2024-12-30T05:37:57.789830",
+                "read": false
             }
         ],
         "invest": [
@@ -324,6 +427,13 @@
                 "message": "hgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgrhgkjnbhgftyryuijkhbvgcfdyrt6y7iujklnbhvgfyrt5678yuihjkbcfgdrt567tyiuhjknbv cfgr",
                 "timestamp": "2024-12-30T02:15:03.901858",
                 "read": true
+            },
+            {
+                "id": 1,
+                "from": "theyounginvestor",
+                "message": "1.5 is here!!!\n\nThe education panel is here! give it a spin",
+                "timestamp": "2024-12-30T05:37:57.789833",
+                "read": true
             }
         ],
         "pinkincali": [
@@ -332,6 +442,22 @@
                 "from": "theyounginvestor",
                 "message": "Hi there Jiya!\n\nI hope this message reaches you, enjoy ViBro Finance! \n\nI will teach you all you need to know! ",
                 "timestamp": "2024-12-30T03:04:08.560927",
+                "read": true
+            },
+            {
+                "id": 1,
+                "from": "theyounginvestor",
+                "message": "1.5 is here!!!\n\nThe education panel is here! give it a spin",
+                "timestamp": "2024-12-30T05:37:57.789837",
+                "read": false
+            }
+        ],
+        "vfufu": [
+            {
+                "id": 0,
+                "from": "theyounginvestor",
+                "message": "Hello Fufu!",
+                "timestamp": "2024-12-31T02:58:10.293653",
                 "read": true
             }
         ]
