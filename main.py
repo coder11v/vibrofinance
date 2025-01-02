@@ -8,10 +8,11 @@ from utils.goal_planner import FinancialGoal, analyze_goal_feasibility, generate
 from utils.auth import AuthManager
 from utils.ml_predictor import StockPredictor # Added import
 from datetime import datetime # Added import
-from pages.auth import init_auth, login_page, logout  # Re-added import
+from pages_hidden.auth import init_auth, login_page, logout  # Re-added import
 import logging
 from utils.education_manager import EducationManager  # Add this import
 import pytz
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
